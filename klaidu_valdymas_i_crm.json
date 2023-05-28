@@ -1,0 +1,637 @@
+{
+    "name": "Klaidų perdavimas programuotojui",
+    "flow": [
+        {
+            "id": 2,
+            "module": "gateway:CustomWebHook",
+            "version": 1,
+            "parameters": {
+                "hook": 808774,
+                "maxResults": 1
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 0,
+                    "name": "Gauti klaidos duomenis"
+                },
+                "restore": {
+                    "parameters": {
+                        "hook": {
+                            "data": {
+                                "editable": "true"
+                            },
+                            "label": "Klaidos perdavimas programuotojui"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "hook",
+                        "type": "hook:gateway-webhook",
+                        "label": "Webhook",
+                        "required": true
+                    },
+                    {
+                        "name": "maxResults",
+                        "type": "number",
+                        "label": "Maximum number of results"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 4,
+            "module": "zohocrm:getObject",
+            "version": 3,
+            "parameters": {
+                "__IMTCONN__": 1644421
+            },
+            "mapper": {
+                "id": "{{2.`Klaidos ID`}}",
+                "module": "Registruotos_Klaidos",
+                "select": "list"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 300,
+                    "y": 0,
+                    "name": "Gauti klaidos duomenis"
+                },
+                "restore": {
+                    "expect": {
+                        "id": {
+                            "mode": "edit"
+                        },
+                        "module": {
+                            "mode": "chose",
+                            "label": "Registruotos Klaidos",
+                            "nested": [
+                                {
+                                    "mode": "edit",
+                                    "name": "id",
+                                    "type": "select",
+                                    "label": "Object ID",
+                                    "options": "rpc://zohocrm/3/listObjects",
+                                    "required": true
+                                }
+                            ]
+                        },
+                        "select": {
+                            "label": "Select from the list"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "zohocrm2"
+                            },
+                            "label": "My Zoho CRM connection"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:zohocrm2",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "select",
+                        "type": "select",
+                        "label": "Get an Object",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "map",
+                                "list"
+                            ]
+                        }
+                    },
+                    {
+                        "mode": "edit",
+                        "name": "module",
+                        "type": "select",
+                        "label": "Module",
+                        "required": true
+                    },
+                    {
+                        "mode": "edit",
+                        "name": "id",
+                        "type": "select",
+                        "label": "Object ID",
+                        "required": true
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "id",
+                        "type": "uinteger",
+                        "label": "Object ID",
+                        "required": true
+                    },
+                    {
+                        "name": "Name",
+                        "type": "text",
+                        "label": "Registruotos Klaidos pavadinimas"
+                    },
+                    {
+                        "name": "Owner",
+                        "spec": [
+                            {
+                                "name": "id",
+                                "type": "text",
+                                "label": "Registruotos Klaidos Owner ID"
+                            },
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Name"
+                            },
+                            {
+                                "name": "email",
+                                "type": "email",
+                                "label": "Email"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Registruotos Klaidos Owner"
+                    },
+                    {
+                        "name": "Klaidos_sprendimo_b_sena",
+                        "type": "text",
+                        "label": "Klaidos sprendimo būsena"
+                    },
+                    {
+                        "name": "Programuotojo_klaidos_sprendimo_b_sena",
+                        "type": "text",
+                        "label": "Programuotojo klaidos sprendimo būsena"
+                    },
+                    {
+                        "name": "Registravimo_tipas",
+                        "type": "text",
+                        "label": "Registravimo tipas"
+                    },
+                    {
+                        "name": "Modified_Time",
+                        "type": "date",
+                        "label": "Modified Time"
+                    },
+                    {
+                        "name": "Created_Time",
+                        "type": "date",
+                        "label": "Created Time"
+                    },
+                    {
+                        "name": "Unsubscribed_Time",
+                        "type": "date",
+                        "label": "Unsubscribed Time"
+                    },
+                    {
+                        "name": "Unsubscribed_Mode",
+                        "type": "text",
+                        "label": "Unsubscribed Mode"
+                    },
+                    {
+                        "name": "Locked__s",
+                        "type": "boolean",
+                        "label": "Locked"
+                    },
+                    {
+                        "name": "Record_Image",
+                        "type": "text",
+                        "label": "Registruotos Klaidos Image"
+                    },
+                    {
+                        "name": "Vardas",
+                        "type": "text",
+                        "label": "Vardas"
+                    },
+                    {
+                        "name": "Pavard",
+                        "type": "text",
+                        "label": "Pavardė"
+                    },
+                    {
+                        "name": "El_pa_to_adresas",
+                        "type": "email",
+                        "label": "El. pašto adresas"
+                    },
+                    {
+                        "name": "Telefono_numeris",
+                        "type": "text",
+                        "label": "Telefono numeris"
+                    },
+                    {
+                        "name": "Klaidos_apib_dinimas",
+                        "type": "text",
+                        "label": "Klaidos apibūdinimas"
+                    },
+                    {
+                        "name": "mon_s_pavadinimas",
+                        "type": "text",
+                        "label": "Įmonės pavadinimas"
+                    },
+                    {
+                        "name": "Prid_tos_nuotraukos",
+                        "type": "text",
+                        "label": "Pridėtos nuotraukos"
+                    },
+                    {
+                        "name": "Created_By",
+                        "spec": [
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Name"
+                            },
+                            {
+                                "name": "id",
+                                "type": "uinteger",
+                                "label": "Created by ID"
+                            },
+                            {
+                                "name": "email",
+                                "type": "email",
+                                "label": "Email"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Created by"
+                    },
+                    {
+                        "name": "$orchestration",
+                        "type": "boolean",
+                        "label": "Orchestration"
+                    },
+                    {
+                        "name": "First_Name",
+                        "type": "text",
+                        "label": "First Name"
+                    },
+                    {
+                        "name": "Full_Name",
+                        "type": "text",
+                        "label": "Full Name"
+                    },
+                    {
+                        "name": "Modified_By",
+                        "spec": [
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Name"
+                            },
+                            {
+                                "name": "id",
+                                "type": "uinteger",
+                                "label": "Modified by ID"
+                            },
+                            {
+                                "name": "email",
+                                "type": "email",
+                                "label": "Email"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Modified by"
+                    },
+                    {
+                        "name": "Tag",
+                        "spec": [
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Name"
+                            },
+                            {
+                                "name": "id",
+                                "type": "uinteger",
+                                "label": "Tag ID"
+                            },
+                            {
+                                "name": "color_code",
+                                "type": "text",
+                                "label": "Color Code"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Tag"
+                    },
+                    {
+                        "name": "Email_Opt_Out",
+                        "type": "boolean",
+                        "label": "Email Opt Out"
+                    },
+                    {
+                        "name": "Last_Name",
+                        "type": "text",
+                        "label": "Last Name"
+                    },
+                    {
+                        "name": "Last_Activity_Time",
+                        "type": "date",
+                        "label": "Last Activity Time"
+                    },
+                    {
+                        "name": "$currency_symbol",
+                        "type": "text",
+                        "label": "Currency Symbol"
+                    },
+                    {
+                        "name": "$sharing_permission",
+                        "type": "text",
+                        "label": "Sharing Permission"
+                    },
+                    {
+                        "name": "$state",
+                        "type": "text",
+                        "label": "State"
+                    },
+                    {
+                        "name": "$converted",
+                        "type": "boolean",
+                        "label": "Converted"
+                    },
+                    {
+                        "name": "$process_flow",
+                        "type": "boolean",
+                        "label": "Process Flow"
+                    },
+                    {
+                        "name": "$approval",
+                        "spec": [
+                            {
+                                "name": "delegate",
+                                "type": "boolean",
+                                "label": "Delegate"
+                            },
+                            {
+                                "name": "approve",
+                                "type": "boolean",
+                                "label": "Approve"
+                            },
+                            {
+                                "name": "reject",
+                                "type": "boolean",
+                                "label": "Reject"
+                            },
+                            {
+                                "name": "resubmit",
+                                "type": "boolean",
+                                "label": "Resubmit"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Approval"
+                    },
+                    {
+                        "name": "$editable",
+                        "type": "boolean",
+                        "label": "Editable"
+                    },
+                    {
+                        "name": "$review_process",
+                        "spec": [
+                            {
+                                "name": "approve",
+                                "type": "boolean",
+                                "label": "Approve"
+                            },
+                            {
+                                "name": "reject",
+                                "type": "boolean",
+                                "label": "Reject"
+                            },
+                            {
+                                "name": "resubmit",
+                                "type": "boolean",
+                                "label": "Resubmit"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Review Process"
+                    },
+                    {
+                        "name": "$converted_detail",
+                        "spec": [],
+                        "type": "collection",
+                        "label": "Converted Detail"
+                    },
+                    {
+                        "name": "$in_merge",
+                        "type": "boolean",
+                        "label": "In Merge"
+                    },
+                    {
+                        "name": "$approval_state",
+                        "type": "text",
+                        "label": "Approval State"
+                    },
+                    {
+                        "name": "$followed",
+                        "type": "boolean",
+                        "label": "Followed"
+                    },
+                    {
+                        "name": "$se_module",
+                        "type": "text",
+                        "label": "SE Module"
+                    },
+                    {
+                        "name": "$calendar_booking_event",
+                        "type": "boolean",
+                        "label": "Calendar Booking Event"
+                    },
+                    {
+                        "name": "$event_cancelled",
+                        "type": "boolean",
+                        "label": "Event Cancelled"
+                    },
+                    {
+                        "name": "$u_id",
+                        "type": "uinteger",
+                        "label": "U ID"
+                    },
+                    {
+                        "name": "$send_notification",
+                        "type": "boolean",
+                        "label": "Send Notification"
+                    },
+                    {
+                        "name": "$calendar_booking_call",
+                        "type": "boolean",
+                        "label": "Calendar Booking Call"
+                    },
+                    {
+                        "name": "$is_shared_to_client",
+                        "type": "boolean",
+                        "label": "Is Shared to Client"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 5,
+            "module": "google-email:ActionSendEmail",
+            "version": 2,
+            "parameters": {
+                "account": 434025
+            },
+            "mapper": {
+                "cc": [],
+                "to": [
+                    "lukaskojalad@gmail.com"
+                ],
+                "bcc": [],
+                "from": "LuEmTrip Administracija lukaskojalad@gmail.com",
+                "html": "<!DOCTYPE html>\n<html>\n  <head>\n    <meta charset=\"utf-8\">\n  </head>\n  <body>\n    <h2>Užregistruota klaida | Reikalinga programuotojo pagalba</h2>\n    <p>Užregistruota sisteminė klaida, kuriai reikalinga Jūsų pagalba.</p>\n    <p>Klaidos duomenys:</p>\n    <ul>\n      <li><strong>Pranešėjas:</strong> {{4.Owner.name}}</li>\n      <li><strong>Aprašymas:</strong> {{2.Pranesimas}}</li>\n\n    </ul>\n    <p>Klaidos sprendimo statuso valdymas:</p>\n     <p>\n      <a href=\"https://hook.eu1.make.com/7hjq4equl3bwypy8tr9qmqlxkv838k8u?taisymoTipas=Vertinama&kortelesID={{4.id}}\"><button style=\"background-color: #008CBA; color: white; padding: 5px 10px; border: none; border-radius: 5px; cursor: pointer;\">Įvertinimo stadijoje</button></a>\n      <a href=\"https://hook.eu1.make.com/7hjq4equl3bwypy8tr9qmqlxkv838k8u?taisymoTipas=Taisoma&kortelesID={{4.id}}\"><button style=\"background-color: #008CBA; color: white; padding: 5px 10px; border: none; border-radius: 5px; cursor: pointer;\">Taisoma</button></a>\n      <a href=\"https://hook.eu1.make.com/7hjq4equl3bwypy8tr9qmqlxkv838k8u?taisymoTipas=Testuojama&kortelesID={{4.id}}\"><button style=\"background-color: #008CBA; color: white; padding: 5px 10px; border: none; border-radius: 5px; cursor: pointer;\">Testuojama</button></a>\n      <a href=\"https://hook.eu1.make.com/7hjq4equl3bwypy8tr9qmqlxkv838k8u?taisymoTipas=Sutvarkyta&kortelesID={{4.id}}\"><button style=\"background-color: #008CBA; color: white; padding: 5px 10px; border: none; border-radius: 5px; cursor: pointer;\">Sutvarkyta</button></a>\n    </p>\n    <p>Pagarbiai,<br>\n    LuEmTrip Administracija</p>\n  </body>\n</html>\n",
+                "subject": "[KLAIDA] Patvirtinta sisteminė klaida",
+                "attachments": []
+            },
+            "metadata": {
+                "designer": {
+                    "x": 600,
+                    "y": 0,
+                    "name": "Pranešimas programuotojui"
+                },
+                "restore": {
+                    "expect": {
+                        "cc": {
+                            "mode": "chose"
+                        },
+                        "to": {
+                            "mode": "chose",
+                            "items": [
+                                null
+                            ]
+                        },
+                        "bcc": {
+                            "mode": "chose"
+                        },
+                        "attachments": {
+                            "mode": "chose"
+                        }
+                    },
+                    "parameters": {
+                        "account": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "google-restricted"
+                            },
+                            "label": "My Google Restricted connection (lukas.kojala@unifiedpost.com)"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "account",
+                        "type": "account:google-restricted",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "from",
+                        "type": "text",
+                        "label": "From"
+                    },
+                    {
+                        "name": "to",
+                        "spec": {
+                            "name": "value",
+                            "type": "email",
+                            "label": "Email address",
+                            "required": true
+                        },
+                        "type": "array",
+                        "label": "To",
+                        "required": true
+                    },
+                    {
+                        "name": "subject",
+                        "type": "text",
+                        "label": "Subject"
+                    },
+                    {
+                        "name": "html",
+                        "type": "text",
+                        "label": "Content"
+                    },
+                    {
+                        "name": "attachments",
+                        "spec": [
+                            {
+                                "name": "fileName",
+                                "type": "filename",
+                                "label": "File name",
+                                "required": true,
+                                "semantic": "file:name"
+                            },
+                            {
+                                "name": "data",
+                                "type": "buffer",
+                                "label": "Data",
+                                "required": true,
+                                "semantic": "file:data"
+                            },
+                            {
+                                "name": "cid",
+                                "type": "text",
+                                "label": "Content-ID"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Attachments"
+                    },
+                    {
+                        "name": "cc",
+                        "spec": {
+                            "name": "value",
+                            "type": "email",
+                            "label": "Email address"
+                        },
+                        "type": "array",
+                        "label": "Copy recipient"
+                    },
+                    {
+                        "name": "bcc",
+                        "spec": {
+                            "name": "value",
+                            "type": "email",
+                            "label": "Email address"
+                        },
+                        "type": "array",
+                        "label": "Blind copy recipient"
+                    }
+                ],
+                "advanced": true
+            }
+        }
+    ],
+    "metadata": {
+        "instant": true,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu1.make.com"
+    }
+}

@@ -1,0 +1,2625 @@
+{
+    "name": "Klaidų kortelių valdymas",
+    "flow": [
+        {
+            "id": 2,
+            "module": "google-email:TriggerNewEmail",
+            "version": 2,
+            "parameters": {
+                "from": "",
+                "text": "",
+                "folder": "[Gmail]/All Mail",
+                "account": 1651989,
+                "subject": "",
+                "criteria": "UNSEEN",
+                "markSeen": true,
+                "maxResults": 100,
+                "searchType": "simple"
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 450,
+                    "name": "Gauti pagalbos laiškus"
+                },
+                "restore": {
+                    "parameters": {
+                        "folder": {
+                            "path": [
+                                "All Mail",
+                                "All Mail"
+                            ]
+                        },
+                        "account": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "google-restricted"
+                            },
+                            "label": "LuEmTrip gmail (luemtrip.pagalba@gmail.com)"
+                        },
+                        "criteria": {
+                            "label": "Only Unread emails"
+                        },
+                        "searchType": {
+                            "label": "Simple filter"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "account",
+                        "type": "account:google-restricted",
+                        "label": "Connection",
+                        "required": true
+                    },
+                    {
+                        "name": "searchType",
+                        "type": "select",
+                        "label": "Filter type",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "simple",
+                                "gmail"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "markSeen",
+                        "type": "boolean",
+                        "label": "Mark email message(s) as read when fetched"
+                    },
+                    {
+                        "name": "maxResults",
+                        "type": "uinteger",
+                        "label": "Maximum number of results"
+                    },
+                    {
+                        "name": "folder",
+                        "type": "folder",
+                        "label": "Folder",
+                        "required": true
+                    },
+                    {
+                        "name": "criteria",
+                        "type": "select",
+                        "label": "Criteria",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "ALL",
+                                "SEEN",
+                                "UNSEEN"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "type": "email",
+                        "label": "Sender email address"
+                    },
+                    {
+                        "name": "subject",
+                        "type": "text",
+                        "label": "Subject"
+                    },
+                    {
+                        "name": "text",
+                        "type": "text",
+                        "label": "Search phrase"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 9,
+            "module": "regexp:AdvancedParser",
+            "version": 1,
+            "parameters": {
+                "global": false,
+                "multiline": false,
+                "sensitive": false,
+                "singleline": false,
+                "advancedParser": true,
+                "continueWhenNoRes": true
+            },
+            "filter": {
+                "name": "Jei tai nėra pagalba",
+                "conditions": [
+                    [
+                        {
+                            "a": "{{2.from.address}}",
+                            "b": "luemtrip.pagalba@gmail.com",
+                            "o": "text:notequal"
+                        }
+                    ],
+                    [
+                        {
+                            "a": "{{2.from.address}}",
+                            "b": "lukas.kojala@unifiedpost.com",
+                            "o": "text:notequal"
+                        }
+                    ]
+                ]
+            },
+            "mapper": {
+                "text": "{{2.text}}",
+                "pattern": "(86\\d{3}\\d{4}|\\+3706\\d{3}\\d{4})"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 300,
+                    "y": 450,
+                    "name": "Ieškoma numerio"
+                },
+                "restore": {},
+                "parameters": [
+                    {
+                        "name": "global",
+                        "type": "boolean",
+                        "label": "Global match",
+                        "required": true
+                    },
+                    {
+                        "name": "sensitive",
+                        "type": "boolean",
+                        "label": "Case sensitive",
+                        "required": true
+                    },
+                    {
+                        "name": "multiline",
+                        "type": "boolean",
+                        "label": "Multiline",
+                        "required": true
+                    },
+                    {
+                        "name": "singleline",
+                        "type": "boolean",
+                        "label": "Singleline",
+                        "required": true
+                    },
+                    {
+                        "name": "continueWhenNoRes",
+                        "type": "boolean",
+                        "label": "Continue the execution of the route even if the module finds no matches",
+                        "required": true
+                    },
+                    {
+                        "name": "advancedParser",
+                        "type": "hidden"
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "pattern",
+                        "type": "text",
+                        "label": "Pattern",
+                        "required": true
+                    },
+                    {
+                        "name": "text",
+                        "type": "text",
+                        "label": "Text",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 10,
+            "module": "regexp:AdvancedParser",
+            "version": 1,
+            "parameters": {
+                "global": false,
+                "multiline": false,
+                "sensitive": false,
+                "singleline": false,
+                "advancedParser": true,
+                "continueWhenNoRes": true
+            },
+            "mapper": {
+                "text": "{{2.text}}",
+                "pattern": "(.+, UAB|.+,UAB)"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 600,
+                    "y": 450,
+                    "name": "Ieškoma įmonės"
+                },
+                "restore": {},
+                "parameters": [
+                    {
+                        "name": "global",
+                        "type": "boolean",
+                        "label": "Global match",
+                        "required": true
+                    },
+                    {
+                        "name": "sensitive",
+                        "type": "boolean",
+                        "label": "Case sensitive",
+                        "required": true
+                    },
+                    {
+                        "name": "multiline",
+                        "type": "boolean",
+                        "label": "Multiline",
+                        "required": true
+                    },
+                    {
+                        "name": "singleline",
+                        "type": "boolean",
+                        "label": "Singleline",
+                        "required": true
+                    },
+                    {
+                        "name": "continueWhenNoRes",
+                        "type": "boolean",
+                        "label": "Continue the execution of the route even if the module finds no matches",
+                        "required": true
+                    },
+                    {
+                        "name": "advancedParser",
+                        "type": "hidden"
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "pattern",
+                        "type": "text",
+                        "label": "Pattern",
+                        "required": true
+                    },
+                    {
+                        "name": "text",
+                        "type": "text",
+                        "label": "Text",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 11,
+            "module": "regexp:AdvancedParser",
+            "version": 1,
+            "parameters": {
+                "global": false,
+                "multiline": false,
+                "sensitive": false,
+                "singleline": false,
+                "advancedParser": true,
+                "continueWhenNoRes": true
+            },
+            "mapper": {
+                "text": "{{2.text}}",
+                "pattern": "(pasiul|pasiūl|pasiul)"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 900,
+                    "y": 450,
+                    "name": "Ieškoma [pasiul]"
+                },
+                "restore": {},
+                "parameters": [
+                    {
+                        "name": "global",
+                        "type": "boolean",
+                        "label": "Global match",
+                        "required": true
+                    },
+                    {
+                        "name": "sensitive",
+                        "type": "boolean",
+                        "label": "Case sensitive",
+                        "required": true
+                    },
+                    {
+                        "name": "multiline",
+                        "type": "boolean",
+                        "label": "Multiline",
+                        "required": true
+                    },
+                    {
+                        "name": "singleline",
+                        "type": "boolean",
+                        "label": "Singleline",
+                        "required": true
+                    },
+                    {
+                        "name": "continueWhenNoRes",
+                        "type": "boolean",
+                        "label": "Continue the execution of the route even if the module finds no matches",
+                        "required": true
+                    },
+                    {
+                        "name": "advancedParser",
+                        "type": "hidden"
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "pattern",
+                        "type": "text",
+                        "label": "Pattern",
+                        "required": true
+                    },
+                    {
+                        "name": "text",
+                        "type": "text",
+                        "label": "Text",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 12,
+            "module": "regexp:AdvancedParser",
+            "version": 1,
+            "parameters": {
+                "global": false,
+                "multiline": false,
+                "sensitive": false,
+                "singleline": false,
+                "advancedParser": true,
+                "continueWhenNoRes": true
+            },
+            "mapper": {
+                "text": "{{2.text}}",
+                "pattern": "(klaid)"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 1200,
+                    "y": 450,
+                    "name": "Ieškoma [klaid]"
+                },
+                "restore": {},
+                "parameters": [
+                    {
+                        "name": "global",
+                        "type": "boolean",
+                        "label": "Global match",
+                        "required": true
+                    },
+                    {
+                        "name": "sensitive",
+                        "type": "boolean",
+                        "label": "Case sensitive",
+                        "required": true
+                    },
+                    {
+                        "name": "multiline",
+                        "type": "boolean",
+                        "label": "Multiline",
+                        "required": true
+                    },
+                    {
+                        "name": "singleline",
+                        "type": "boolean",
+                        "label": "Singleline",
+                        "required": true
+                    },
+                    {
+                        "name": "continueWhenNoRes",
+                        "type": "boolean",
+                        "label": "Continue the execution of the route even if the module finds no matches",
+                        "required": true
+                    },
+                    {
+                        "name": "advancedParser",
+                        "type": "hidden"
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "pattern",
+                        "type": "text",
+                        "label": "Pattern",
+                        "required": true
+                    },
+                    {
+                        "name": "text",
+                        "type": "text",
+                        "label": "Text",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 13,
+            "module": "regexp:AdvancedParser",
+            "version": 1,
+            "parameters": {
+                "global": false,
+                "multiline": false,
+                "sensitive": false,
+                "singleline": false,
+                "advancedParser": true,
+                "continueWhenNoRes": true
+            },
+            "mapper": {
+                "text": "{{2.text}}",
+                "pattern": "(letai|lėtai|lėtokai|letokai|stringa|strigo|string)"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 1500,
+                    "y": 450,
+                    "name": "Ieškoma [letai|letokai]"
+                },
+                "restore": {},
+                "parameters": [
+                    {
+                        "name": "global",
+                        "type": "boolean",
+                        "label": "Global match",
+                        "required": true
+                    },
+                    {
+                        "name": "sensitive",
+                        "type": "boolean",
+                        "label": "Case sensitive",
+                        "required": true
+                    },
+                    {
+                        "name": "multiline",
+                        "type": "boolean",
+                        "label": "Multiline",
+                        "required": true
+                    },
+                    {
+                        "name": "singleline",
+                        "type": "boolean",
+                        "label": "Singleline",
+                        "required": true
+                    },
+                    {
+                        "name": "continueWhenNoRes",
+                        "type": "boolean",
+                        "label": "Continue the execution of the route even if the module finds no matches",
+                        "required": true
+                    },
+                    {
+                        "name": "advancedParser",
+                        "type": "hidden"
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "pattern",
+                        "type": "text",
+                        "label": "Pattern",
+                        "required": true
+                    },
+                    {
+                        "name": "text",
+                        "type": "text",
+                        "label": "Text",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 14,
+            "module": "builtin:BasicRouter",
+            "version": 1,
+            "mapper": null,
+            "metadata": {
+                "designer": {
+                    "x": 1800,
+                    "y": 450
+                }
+            },
+            "routes": [
+                {
+                    "flow": [
+                        {
+                            "id": 15,
+                            "module": "zohocrm:searchUsers",
+                            "version": 3,
+                            "parameters": {
+                                "__IMTCONN__": 1644421
+                            },
+                            "filter": {
+                                "name": "Jei tai klaida",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{12.value}}",
+                                            "o": "exist"
+                                        },
+                                        {
+                                            "a": "{{11.value}}",
+                                            "o": "notexist"
+                                        },
+                                        {
+                                            "a": "{{13.value}}",
+                                            "o": "notexist"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "type": "ActiveUsers",
+                                "limit": "100"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 2100,
+                                    "y": 0,
+                                    "name": "Surasti visus vartotojus"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "ids": {
+                                            "mode": "chose"
+                                        },
+                                        "type": {
+                                            "mode": "chose",
+                                            "label": "Active Users"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "zohocrm2"
+                                            },
+                                            "label": "My Zoho CRM connection"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:zohocrm2",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "type",
+                                        "type": "select",
+                                        "label": "Type",
+                                        "validate": {
+                                            "enum": [
+                                                "AllUsers",
+                                                "ActiveUsers",
+                                                "DeactiveUsers",
+                                                "ConfirmedUsers",
+                                                "NotConfirmedUsers",
+                                                "DeletedUsers",
+                                                "ActiveConfirmedUsers",
+                                                "AdminUsers",
+                                                "ActiveConfirmedAdmins",
+                                                "CurrentUser"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "limit",
+                                        "type": "uinteger",
+                                        "label": "Limit"
+                                    },
+                                    {
+                                        "name": "ids",
+                                        "type": "select",
+                                        "label": "User ID",
+                                        "multiple": true
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 16,
+                            "module": "builtin:BasicAggregator",
+                            "version": 1,
+                            "parameters": {
+                                "feeder": 15
+                            },
+                            "mapper": {
+                                "id": "{{15.id}}",
+                                "email": "{{15.email}}",
+                                "first_name": "{{15.first_name}}",
+                                "__IMTLENGTH__": "{{15.`__IMTLENGTH__`}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 2400,
+                                    "y": 0,
+                                    "name": "Sugeneruojamas pagalbos spec. mąsyvas"
+                                },
+                                "restore": {
+                                    "extra": {
+                                        "feeder": {
+                                            "label": "Surasti visus vartotojus - Search Users [8]"
+                                        },
+                                        "target": {
+                                            "label": "Custom"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "id": 17,
+                            "module": "util:SetVariable2",
+                            "version": 1,
+                            "parameters": {},
+                            "mapper": {
+                                "name": "Random Number",
+                                "scope": "roundtrip",
+                                "value": "{{floor(random * (16.array[1].`__IMTLENGTH__` - 1 + 1)) + 1}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 2700,
+                                    "y": 0,
+                                    "name": "Nustatomas atsitiktinis skaičius"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "scope": {
+                                            "label": "One cycle"
+                                        }
+                                    }
+                                },
+                                "expect": [
+                                    {
+                                        "name": "name",
+                                        "type": "text",
+                                        "label": "Variable name",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "scope",
+                                        "type": "select",
+                                        "label": "Variable lifetime",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "roundtrip",
+                                                "execution"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": "any",
+                                        "label": "Variable value"
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "Random Number",
+                                        "type": "any",
+                                        "label": "Random Number"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 27,
+                            "module": "zohocrm:createObject",
+                            "version": 3,
+                            "parameters": {
+                                "__IMTCONN__": 1644421
+                            },
+                            "mapper": {
+                                "Name": "{{2.from.name}} | Registruota klaida",
+                                "Owner": "{{16.array[17.`Random Number`].id}}",
+                                "Pavard": "{{get(split(2.from.name; space); 2)}}",
+                                "Vardas": "{{get(split(2.from.name; space); 1)}}",
+                                "module": "Registruotos_Klaidos",
+                                "El_pa_to_adresas": "{{2.from.address}}",
+                                "Telefono_numeris": "{{9.value}}",
+                                "mon_s_pavadinimas": "{{10.value}}",
+                                "Registravimo_tipas": "Klaida",
+                                "Klaidos_apib_dinimas": "{{2.text}}",
+                                "Klaidos_sprendimo_b_sena": "Laukiama pagalbos"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 3000,
+                                    "y": 0,
+                                    "name": "Sukuriama klaidos kortelė"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "module": {
+                                            "mode": "chose",
+                                            "label": "Registruotos Klaidos"
+                                        },
+                                        "trigger": {
+                                            "mode": "chose"
+                                        },
+                                        "Registravimo_tipas": {
+                                            "mode": "chose",
+                                            "label": "Klaida"
+                                        },
+                                        "Prid_tos_nuotraukos": {
+                                            "mode": "chose"
+                                        },
+                                        "Klaidos_sprendimo_b_sena": {
+                                            "mode": "chose",
+                                            "label": "Laukiama pagalbos"
+                                        },
+                                        "Programuotojo_klaidos_sprendimo_b_sena": {
+                                            "mode": "chose",
+                                            "label": "Empty"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "zohocrm2"
+                                            },
+                                            "label": "My Zoho CRM connection"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:zohocrm2",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "module",
+                                        "type": "select",
+                                        "label": "Module",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "trigger",
+                                        "type": "select",
+                                        "label": "Trigger",
+                                        "multiple": true,
+                                        "validate": {
+                                            "enum": [
+                                                "workflow",
+                                                "approval",
+                                                "blueprint"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "Name",
+                                        "type": "text",
+                                        "label": "Registruotos Klaidos pavadinimas",
+                                        "required": true,
+                                        "validate": {
+                                            "max": 255
+                                        }
+                                    },
+                                    {
+                                        "name": "Klaidos_sprendimo_b_sena",
+                                        "type": "select",
+                                        "label": "Klaidos sprendimo būsena",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "Owner",
+                                        "type": "text",
+                                        "label": "Registruotos Klaidos Owner",
+                                        "validate": {
+                                            "max": 120
+                                        }
+                                    },
+                                    {
+                                        "name": "Programuotojo_klaidos_sprendimo_b_sena",
+                                        "type": "select",
+                                        "label": "Programuotojo klaidos sprendimo būsena"
+                                    },
+                                    {
+                                        "name": "Registravimo_tipas",
+                                        "type": "select",
+                                        "label": "Registravimo tipas"
+                                    },
+                                    {
+                                        "name": "Vardas",
+                                        "type": "text",
+                                        "validate": {
+                                            "max": 255
+                                        }
+                                    },
+                                    {
+                                        "name": "Pavard",
+                                        "type": "text",
+                                        "label": "Pavardė",
+                                        "validate": {
+                                            "max": 255
+                                        }
+                                    },
+                                    {
+                                        "name": "El_pa_to_adresas",
+                                        "type": "email",
+                                        "label": "El. pašto adresas",
+                                        "validate": {
+                                            "max": 100
+                                        }
+                                    },
+                                    {
+                                        "name": "Telefono_numeris",
+                                        "type": "text",
+                                        "label": "Telefono numeris",
+                                        "validate": {
+                                            "max": 30
+                                        }
+                                    },
+                                    {
+                                        "name": "Klaidos_apib_dinimas",
+                                        "type": "text",
+                                        "label": "Klaidos apibūdinimas",
+                                        "validate": {
+                                            "max": 2000
+                                        }
+                                    },
+                                    {
+                                        "name": "mon_s_pavadinimas",
+                                        "type": "text",
+                                        "label": "Įmonės pavadinimas",
+                                        "validate": {
+                                            "max": 255
+                                        }
+                                    },
+                                    {
+                                        "name": "Prid_tos_nuotraukos",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "text"
+                                        },
+                                        "type": "array",
+                                        "label": "Pridėtos nuotraukos",
+                                        "validate": {
+                                            "max": 10
+                                        }
+                                    }
+                                ],
+                                "advanced": true
+                            }
+                        },
+                        {
+                            "id": 45,
+                            "module": "google-email:ActionSendEmail",
+                            "version": 2,
+                            "parameters": {
+                                "account": 434025
+                            },
+                            "mapper": {
+                                "cc": [],
+                                "to": [
+                                    "luksadsa@gmail.com"
+                                ],
+                                "bcc": [],
+                                "from": "LuEmTrip Administracija lukaskojalad@gmail.com",
+                                "html": "<!DOCTYPE html>\n<html>\n  <head>\n    <meta charset=\"utf-8\">\n  </head>\n  <body>\n    <h2>Nauja klaida užregistruota</h2>\n    <p>Klientas sistemoje užregistravo klaidą, kuriai reikia Jūsų dėmesio.</p>\n    <p>Klaidos duomenys:</p>\n    <ul>\n      <li><strong>Tipas:</strong> Klaida</li>\n      <li><strong>Pranešėjas:</strong> {{2.from.name}} | {{2.from.address}}</li>\n    </ul>\n    <p>Norint peržiūrėti klaidos kortelę paspauskite mygtuką žemiau:</p>\n    <p>\n      <a href=\"https://crmplus.zoho.eu/portal6622/index.do/cxapp/crm/org20087938738/tab/CustomModule4/{{27.Id}}\">\n        <button style=\"background-color: #008CBA; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;\">Peržiūrėti klaidos kortelę</button>\n      </a>\n    </p>\n    <p>Pagarbiai,<br>LuEmTrip Administracija</p>\n  </body>\n</html>\n",
+                                "subject": "[KLAIDA] Užregistruota nauja klaida",
+                                "attachments": []
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 3300,
+                                    "y": 0,
+                                    "name": "Pranešimas pagalbos spec."
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "cc": {
+                                            "mode": "chose"
+                                        },
+                                        "to": {
+                                            "mode": "chose",
+                                            "items": [
+                                                null
+                                            ]
+                                        },
+                                        "bcc": {
+                                            "mode": "chose"
+                                        },
+                                        "attachments": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "account": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "google-restricted"
+                                            },
+                                            "label": "My Google Restricted connection (lukas.kojala@unifiedpost.com)"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "account",
+                                        "type": "account:google-restricted",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "from",
+                                        "type": "text",
+                                        "label": "From"
+                                    },
+                                    {
+                                        "name": "to",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "email",
+                                            "label": "Email address",
+                                            "required": true
+                                        },
+                                        "type": "array",
+                                        "label": "To",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "subject",
+                                        "type": "text",
+                                        "label": "Subject"
+                                    },
+                                    {
+                                        "name": "html",
+                                        "type": "text",
+                                        "label": "Content"
+                                    },
+                                    {
+                                        "name": "attachments",
+                                        "spec": [
+                                            {
+                                                "name": "fileName",
+                                                "type": "filename",
+                                                "label": "File name",
+                                                "required": true,
+                                                "semantic": "file:name"
+                                            },
+                                            {
+                                                "name": "data",
+                                                "type": "buffer",
+                                                "label": "Data",
+                                                "required": true,
+                                                "semantic": "file:data"
+                                            },
+                                            {
+                                                "name": "cid",
+                                                "type": "text",
+                                                "label": "Content-ID"
+                                            }
+                                        ],
+                                        "type": "array",
+                                        "label": "Attachments"
+                                    },
+                                    {
+                                        "name": "cc",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "email",
+                                            "label": "Email address"
+                                        },
+                                        "type": "array",
+                                        "label": "Copy recipient"
+                                    },
+                                    {
+                                        "name": "bcc",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "email",
+                                            "label": "Email address"
+                                        },
+                                        "type": "array",
+                                        "label": "Blind copy recipient"
+                                    }
+                                ],
+                                "advanced": true
+                            }
+                        }
+                    ]
+                },
+                {
+                    "flow": [
+                        {
+                            "id": 18,
+                            "module": "zohocrm:searchUsers",
+                            "version": 3,
+                            "parameters": {
+                                "__IMTCONN__": 1644421
+                            },
+                            "filter": {
+                                "name": "Jei tai pasiūlymas",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{13.value}}",
+                                            "o": "notexist"
+                                        },
+                                        {
+                                            "a": "{{11.value}}",
+                                            "o": "exist"
+                                        },
+                                        {
+                                            "a": "{{12.value}}",
+                                            "o": "notexist"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "type": "ActiveUsers",
+                                "limit": "100"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 2100,
+                                    "y": 300,
+                                    "name": "Surasti visus vartotojus"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "ids": {
+                                            "mode": "chose"
+                                        },
+                                        "type": {
+                                            "mode": "chose",
+                                            "label": "Active Users"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "zohocrm2"
+                                            },
+                                            "label": "My Zoho CRM connection"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:zohocrm2",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "type",
+                                        "type": "select",
+                                        "label": "Type",
+                                        "validate": {
+                                            "enum": [
+                                                "AllUsers",
+                                                "ActiveUsers",
+                                                "DeactiveUsers",
+                                                "ConfirmedUsers",
+                                                "NotConfirmedUsers",
+                                                "DeletedUsers",
+                                                "ActiveConfirmedUsers",
+                                                "AdminUsers",
+                                                "ActiveConfirmedAdmins",
+                                                "CurrentUser"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "limit",
+                                        "type": "uinteger",
+                                        "label": "Limit"
+                                    },
+                                    {
+                                        "name": "ids",
+                                        "type": "select",
+                                        "label": "User ID",
+                                        "multiple": true
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 19,
+                            "module": "builtin:BasicAggregator",
+                            "version": 1,
+                            "parameters": {
+                                "feeder": 18
+                            },
+                            "mapper": {
+                                "id": "{{18.id}}",
+                                "email": "{{18.email}}",
+                                "first_name": "{{18.first_name}}",
+                                "__IMTLENGTH__": "{{18.`__IMTLENGTH__`}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 2400,
+                                    "y": 300,
+                                    "name": "Sugeneruojamas pagalbos spec. mąsyvas"
+                                },
+                                "restore": {
+                                    "extra": {
+                                        "feeder": {
+                                            "label": "Surasti visus vartotojus - Search Users [8]"
+                                        },
+                                        "target": {
+                                            "label": "Custom"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "id": 20,
+                            "module": "util:SetVariable2",
+                            "version": 1,
+                            "parameters": {},
+                            "mapper": {
+                                "name": "Random Number",
+                                "scope": "roundtrip",
+                                "value": "{{floor(random * (19.array[1].`__IMTLENGTH__` - 1 + 1)) + 1}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 2700,
+                                    "y": 300,
+                                    "name": "Nustatomas atsitiktinis skaičius"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "scope": {
+                                            "label": "One cycle"
+                                        }
+                                    }
+                                },
+                                "expect": [
+                                    {
+                                        "name": "name",
+                                        "type": "text",
+                                        "label": "Variable name",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "scope",
+                                        "type": "select",
+                                        "label": "Variable lifetime",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "roundtrip",
+                                                "execution"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": "any",
+                                        "label": "Variable value"
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "Random Number",
+                                        "type": "any",
+                                        "label": "Random Number"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 33,
+                            "module": "zohocrm:createObject",
+                            "version": 3,
+                            "parameters": {
+                                "__IMTCONN__": 1644421
+                            },
+                            "mapper": {
+                                "Name": "{{2.from.name}} | Registruotas pasiūlymas",
+                                "Owner": "{{19.array[20.`Random Number`].id}}",
+                                "Pavard": "{{get(split(2.from.name; space); 2)}}",
+                                "Vardas": "{{get(split(2.from.name; space); 1)}}",
+                                "module": "Registruotos_Klaidos",
+                                "El_pa_to_adresas": "{{2.from.address}}",
+                                "Telefono_numeris": "{{9.value}}",
+                                "mon_s_pavadinimas": "{{10.value}}",
+                                "Registravimo_tipas": "Pasiūlymas",
+                                "Klaidos_apib_dinimas": "{{2.text}}",
+                                "Klaidos_sprendimo_b_sena": "Laukiama pagalbos"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 3000,
+                                    "y": 300,
+                                    "name": "Sukuriama klaidos kortelė"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "module": {
+                                            "mode": "chose",
+                                            "label": "Registruotos Klaidos"
+                                        },
+                                        "trigger": {
+                                            "mode": "chose"
+                                        },
+                                        "Registravimo_tipas": {
+                                            "mode": "chose",
+                                            "label": "Pasiūlymas"
+                                        },
+                                        "Prid_tos_nuotraukos": {
+                                            "mode": "chose"
+                                        },
+                                        "Klaidos_sprendimo_b_sena": {
+                                            "mode": "chose",
+                                            "label": "Laukiama pagalbos"
+                                        },
+                                        "Programuotojo_klaidos_sprendimo_b_sena": {
+                                            "mode": "chose",
+                                            "label": "Empty"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "zohocrm2"
+                                            },
+                                            "label": "My Zoho CRM connection"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:zohocrm2",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "module",
+                                        "type": "select",
+                                        "label": "Module",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "trigger",
+                                        "type": "select",
+                                        "label": "Trigger",
+                                        "multiple": true,
+                                        "validate": {
+                                            "enum": [
+                                                "workflow",
+                                                "approval",
+                                                "blueprint"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "Name",
+                                        "type": "text",
+                                        "label": "Registruotos Klaidos pavadinimas",
+                                        "required": true,
+                                        "validate": {
+                                            "max": 255
+                                        }
+                                    },
+                                    {
+                                        "name": "Klaidos_sprendimo_b_sena",
+                                        "type": "select",
+                                        "label": "Klaidos sprendimo būsena",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "Owner",
+                                        "type": "text",
+                                        "label": "Registruotos Klaidos Owner",
+                                        "validate": {
+                                            "max": 120
+                                        }
+                                    },
+                                    {
+                                        "name": "Programuotojo_klaidos_sprendimo_b_sena",
+                                        "type": "select",
+                                        "label": "Programuotojo klaidos sprendimo būsena"
+                                    },
+                                    {
+                                        "name": "Registravimo_tipas",
+                                        "type": "select",
+                                        "label": "Registravimo tipas"
+                                    },
+                                    {
+                                        "name": "Vardas",
+                                        "type": "text",
+                                        "validate": {
+                                            "max": 255
+                                        }
+                                    },
+                                    {
+                                        "name": "Pavard",
+                                        "type": "text",
+                                        "label": "Pavardė",
+                                        "validate": {
+                                            "max": 255
+                                        }
+                                    },
+                                    {
+                                        "name": "El_pa_to_adresas",
+                                        "type": "email",
+                                        "label": "El. pašto adresas",
+                                        "validate": {
+                                            "max": 100
+                                        }
+                                    },
+                                    {
+                                        "name": "Telefono_numeris",
+                                        "type": "text",
+                                        "label": "Telefono numeris",
+                                        "validate": {
+                                            "max": 30
+                                        }
+                                    },
+                                    {
+                                        "name": "Klaidos_apib_dinimas",
+                                        "type": "text",
+                                        "label": "Klaidos apibūdinimas",
+                                        "validate": {
+                                            "max": 2000
+                                        }
+                                    },
+                                    {
+                                        "name": "mon_s_pavadinimas",
+                                        "type": "text",
+                                        "label": "Įmonės pavadinimas",
+                                        "validate": {
+                                            "max": 255
+                                        }
+                                    },
+                                    {
+                                        "name": "Prid_tos_nuotraukos",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "text"
+                                        },
+                                        "type": "array",
+                                        "label": "Pridėtos nuotraukos",
+                                        "validate": {
+                                            "max": 10
+                                        }
+                                    }
+                                ],
+                                "advanced": true
+                            }
+                        },
+                        {
+                            "id": 48,
+                            "module": "google-email:ActionSendEmail",
+                            "version": 2,
+                            "parameters": {
+                                "account": 434025
+                            },
+                            "mapper": {
+                                "cc": [],
+                                "to": [
+                                    "{{19.array[20.`Random Number`].email}}"
+                                ],
+                                "bcc": [],
+                                "from": "LuEmTrip Administracija lukaskojalad@gmail.com",
+                                "html": "<!DOCTYPE html>\n<html>\n  <head>\n    <meta charset=\"utf-8\">\n  </head>\n  <body>\n    <h2>Nauja klaida užregistruota</h2>\n    <p>Klientas sistemoje užregistravo klaidą, kuriai reikia Jūsų dėmesio.</p>\n    <p>Klaidos duomenys:</p>\n    <ul>\n      <li><strong>Tipas:</strong>Pasiūlymas</li>\n      <li><strong>Pranešėjas:</strong> {{2.from.name}} | {{2.from.address}}</li>\n    </ul>\n    <p>Norint peržiūrėti klaidos kortelę paspauskite mygtuką žemiau:</p>\n    <p>\n      <a href=\"https://crmplus.zoho.eu/portal6622/index.do/cxapp/crm/org20087938738/tab/CustomModule4/{{33.Id}}\">\n        <button style=\"background-color: #008CBA; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;\">Peržiūrėti klaidos kortelę</button>\n      </a>\n    </p>\n    <p>Pagarbiai,<br>LuEmTrip Administracija</p>\n  </body>\n</html>\n",
+                                "subject": "[PASIŪLYMAS] Užregistruotas naujas pasiūlymas",
+                                "attachments": []
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 3300,
+                                    "y": 300,
+                                    "name": "Pranešimas pagalbos spec."
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "cc": {
+                                            "mode": "chose"
+                                        },
+                                        "to": {
+                                            "mode": "chose",
+                                            "items": [
+                                                null
+                                            ]
+                                        },
+                                        "bcc": {
+                                            "mode": "chose"
+                                        },
+                                        "attachments": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "account": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "google-restricted"
+                                            },
+                                            "label": "My Google Restricted connection (lukas.kojala@unifiedpost.com)"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "account",
+                                        "type": "account:google-restricted",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "from",
+                                        "type": "text",
+                                        "label": "From"
+                                    },
+                                    {
+                                        "name": "to",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "email",
+                                            "label": "Email address",
+                                            "required": true
+                                        },
+                                        "type": "array",
+                                        "label": "To",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "subject",
+                                        "type": "text",
+                                        "label": "Subject"
+                                    },
+                                    {
+                                        "name": "html",
+                                        "type": "text",
+                                        "label": "Content"
+                                    },
+                                    {
+                                        "name": "attachments",
+                                        "spec": [
+                                            {
+                                                "name": "fileName",
+                                                "type": "filename",
+                                                "label": "File name",
+                                                "required": true,
+                                                "semantic": "file:name"
+                                            },
+                                            {
+                                                "name": "data",
+                                                "type": "buffer",
+                                                "label": "Data",
+                                                "required": true,
+                                                "semantic": "file:data"
+                                            },
+                                            {
+                                                "name": "cid",
+                                                "type": "text",
+                                                "label": "Content-ID"
+                                            }
+                                        ],
+                                        "type": "array",
+                                        "label": "Attachments"
+                                    },
+                                    {
+                                        "name": "cc",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "email",
+                                            "label": "Email address"
+                                        },
+                                        "type": "array",
+                                        "label": "Copy recipient"
+                                    },
+                                    {
+                                        "name": "bcc",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "email",
+                                            "label": "Email address"
+                                        },
+                                        "type": "array",
+                                        "label": "Blind copy recipient"
+                                    }
+                                ],
+                                "advanced": true
+                            }
+                        }
+                    ]
+                },
+                {
+                    "flow": [
+                        {
+                            "id": 21,
+                            "module": "zohocrm:searchUsers",
+                            "version": 3,
+                            "parameters": {
+                                "__IMTCONN__": 1644421
+                            },
+                            "filter": {
+                                "name": "Jei tai sutrikimas",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{13.value}}",
+                                            "o": "exist"
+                                        },
+                                        {
+                                            "a": "{{12.value}}",
+                                            "o": "notexist"
+                                        },
+                                        {
+                                            "a": "{{11.value}}",
+                                            "o": "notexist"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "type": "ActiveUsers",
+                                "limit": "100"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 2100,
+                                    "y": 600,
+                                    "name": "Surasti visus vartotojus"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "ids": {
+                                            "mode": "chose"
+                                        },
+                                        "type": {
+                                            "mode": "chose",
+                                            "label": "Active Users"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "zohocrm2"
+                                            },
+                                            "label": "My Zoho CRM connection"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:zohocrm2",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "type",
+                                        "type": "select",
+                                        "label": "Type",
+                                        "validate": {
+                                            "enum": [
+                                                "AllUsers",
+                                                "ActiveUsers",
+                                                "DeactiveUsers",
+                                                "ConfirmedUsers",
+                                                "NotConfirmedUsers",
+                                                "DeletedUsers",
+                                                "ActiveConfirmedUsers",
+                                                "AdminUsers",
+                                                "ActiveConfirmedAdmins",
+                                                "CurrentUser"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "limit",
+                                        "type": "uinteger",
+                                        "label": "Limit"
+                                    },
+                                    {
+                                        "name": "ids",
+                                        "type": "select",
+                                        "label": "User ID",
+                                        "multiple": true
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 22,
+                            "module": "builtin:BasicAggregator",
+                            "version": 1,
+                            "parameters": {
+                                "feeder": 21
+                            },
+                            "mapper": {
+                                "id": "{{21.id}}",
+                                "email": "{{21.email}}",
+                                "first_name": "{{21.first_name}}",
+                                "__IMTLENGTH__": "{{21.`__IMTLENGTH__`}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 2400,
+                                    "y": 600,
+                                    "name": "Sugeneruojamas pagalbos spec. mąsyvas"
+                                },
+                                "restore": {
+                                    "extra": {
+                                        "feeder": {
+                                            "label": "Surasti visus vartotojus - Search Users [8]"
+                                        },
+                                        "target": {
+                                            "label": "Custom"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "id": 23,
+                            "module": "util:SetVariable2",
+                            "version": 1,
+                            "parameters": {},
+                            "mapper": {
+                                "name": "Random Number",
+                                "scope": "roundtrip",
+                                "value": "{{floor(random * (22.array[1].`__IMTLENGTH__` - 1 + 1)) + 1}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 2700,
+                                    "y": 600,
+                                    "name": "Nustatomas atsitiktinis skaičius"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "scope": {
+                                            "label": "One cycle"
+                                        }
+                                    }
+                                },
+                                "expect": [
+                                    {
+                                        "name": "name",
+                                        "type": "text",
+                                        "label": "Variable name",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "scope",
+                                        "type": "select",
+                                        "label": "Variable lifetime",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "roundtrip",
+                                                "execution"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": "any",
+                                        "label": "Variable value"
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "Random Number",
+                                        "type": "any",
+                                        "label": "Random Number"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 37,
+                            "module": "zohocrm:createObject",
+                            "version": 3,
+                            "parameters": {
+                                "__IMTCONN__": 1644421
+                            },
+                            "mapper": {
+                                "Name": "{{2.from.name}} | Registruotas sutrikimas",
+                                "Owner": "{{22.array[23.`Random Number`].id}}",
+                                "Pavard": "{{get(split(2.from.name; space); 2)}}",
+                                "Vardas": "{{get(split(2.from.name; space); 1)}}",
+                                "module": "Registruotos_Klaidos",
+                                "El_pa_to_adresas": "{{2.from.address}}",
+                                "Telefono_numeris": "{{9.value}}",
+                                "mon_s_pavadinimas": "{{10.value}}",
+                                "Registravimo_tipas": "Sistemos sutrikimas",
+                                "Klaidos_apib_dinimas": "{{2.text}}",
+                                "Klaidos_sprendimo_b_sena": "Laukiama pagalbos"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 3000,
+                                    "y": 600,
+                                    "name": "Sukuriama klaidos kortelė"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "module": {
+                                            "mode": "chose",
+                                            "label": "Registruotos Klaidos"
+                                        },
+                                        "trigger": {
+                                            "mode": "chose"
+                                        },
+                                        "Registravimo_tipas": {
+                                            "mode": "chose",
+                                            "label": "Sistemos sutrikimas"
+                                        },
+                                        "Prid_tos_nuotraukos": {
+                                            "mode": "chose"
+                                        },
+                                        "Klaidos_sprendimo_b_sena": {
+                                            "mode": "chose",
+                                            "label": "Laukiama pagalbos"
+                                        },
+                                        "Programuotojo_klaidos_sprendimo_b_sena": {
+                                            "mode": "chose",
+                                            "label": "Empty"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "zohocrm2"
+                                            },
+                                            "label": "My Zoho CRM connection"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:zohocrm2",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "module",
+                                        "type": "select",
+                                        "label": "Module",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "trigger",
+                                        "type": "select",
+                                        "label": "Trigger",
+                                        "multiple": true,
+                                        "validate": {
+                                            "enum": [
+                                                "workflow",
+                                                "approval",
+                                                "blueprint"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "Name",
+                                        "type": "text",
+                                        "label": "Registruotos Klaidos pavadinimas",
+                                        "required": true,
+                                        "validate": {
+                                            "max": 255
+                                        }
+                                    },
+                                    {
+                                        "name": "Klaidos_sprendimo_b_sena",
+                                        "type": "select",
+                                        "label": "Klaidos sprendimo būsena",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "Owner",
+                                        "type": "text",
+                                        "label": "Registruotos Klaidos Owner",
+                                        "validate": {
+                                            "max": 120
+                                        }
+                                    },
+                                    {
+                                        "name": "Programuotojo_klaidos_sprendimo_b_sena",
+                                        "type": "select",
+                                        "label": "Programuotojo klaidos sprendimo būsena"
+                                    },
+                                    {
+                                        "name": "Registravimo_tipas",
+                                        "type": "select",
+                                        "label": "Registravimo tipas"
+                                    },
+                                    {
+                                        "name": "Vardas",
+                                        "type": "text",
+                                        "validate": {
+                                            "max": 255
+                                        }
+                                    },
+                                    {
+                                        "name": "Pavard",
+                                        "type": "text",
+                                        "label": "Pavardė",
+                                        "validate": {
+                                            "max": 255
+                                        }
+                                    },
+                                    {
+                                        "name": "El_pa_to_adresas",
+                                        "type": "email",
+                                        "label": "El. pašto adresas",
+                                        "validate": {
+                                            "max": 100
+                                        }
+                                    },
+                                    {
+                                        "name": "Telefono_numeris",
+                                        "type": "text",
+                                        "label": "Telefono numeris",
+                                        "validate": {
+                                            "max": 30
+                                        }
+                                    },
+                                    {
+                                        "name": "Klaidos_apib_dinimas",
+                                        "type": "text",
+                                        "label": "Klaidos apibūdinimas",
+                                        "validate": {
+                                            "max": 2000
+                                        }
+                                    },
+                                    {
+                                        "name": "mon_s_pavadinimas",
+                                        "type": "text",
+                                        "label": "Įmonės pavadinimas",
+                                        "validate": {
+                                            "max": 255
+                                        }
+                                    },
+                                    {
+                                        "name": "Prid_tos_nuotraukos",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "text"
+                                        },
+                                        "type": "array",
+                                        "label": "Pridėtos nuotraukos",
+                                        "validate": {
+                                            "max": 10
+                                        }
+                                    }
+                                ],
+                                "advanced": true
+                            }
+                        },
+                        {
+                            "id": 49,
+                            "module": "google-email:ActionSendEmail",
+                            "version": 2,
+                            "parameters": {
+                                "account": 434025
+                            },
+                            "mapper": {
+                                "cc": [],
+                                "to": [
+                                    "{{22.array[23.`Random Number`].email}}"
+                                ],
+                                "bcc": [],
+                                "from": "LuEmTrip Administracija lukaskojalad@gmail.com",
+                                "html": "<!DOCTYPE html>\n<html>\n  <head>\n    <meta charset=\"utf-8\">\n  </head>\n  <body>\n    <h2>Nauja klaida užregistruota</h2>\n    <p>Klientas sistemoje užregistravo klaidą, kuriai reikia Jūsų dėmesio.</p>\n    <p>Klaidos duomenys:</p>\n    <ul>\n      <li><strong>Tipas:</strong> Sutrikimas</li>\n      <li><strong>Pranešėjas:</strong> {{2.from.name}} | {{2.from.address}}</li>\n    </ul>\n    <p>Norint peržiūrėti klaidos kortelę paspauskite mygtuką žemiau:</p>\n    <p>\n      <a href=\"https://crmplus.zoho.eu/portal6622/index.do/cxapp/crm/org20087938738/tab/CustomModule4/{{37.Id}}\">\n        <button style=\"background-color: #008CBA; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;\">Peržiūrėti klaidos kortelę</button>\n      </a>\n    </p>\n    <p>Pagarbiai,<br>LuEmTrip Administracija</p>\n  </body>\n</html>\n",
+                                "subject": "[SUTRIKIMAS] Užregistruotas naujas sutrikimas",
+                                "attachments": []
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 3300,
+                                    "y": 600,
+                                    "name": "Pranešimas pagalbos spec."
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "cc": {
+                                            "mode": "chose"
+                                        },
+                                        "to": {
+                                            "mode": "chose",
+                                            "items": [
+                                                null
+                                            ]
+                                        },
+                                        "bcc": {
+                                            "mode": "chose"
+                                        },
+                                        "attachments": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "account": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "google-restricted"
+                                            },
+                                            "label": "My Google Restricted connection (lukas.kojala@unifiedpost.com)"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "account",
+                                        "type": "account:google-restricted",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "from",
+                                        "type": "text",
+                                        "label": "From"
+                                    },
+                                    {
+                                        "name": "to",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "email",
+                                            "label": "Email address",
+                                            "required": true
+                                        },
+                                        "type": "array",
+                                        "label": "To",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "subject",
+                                        "type": "text",
+                                        "label": "Subject"
+                                    },
+                                    {
+                                        "name": "html",
+                                        "type": "text",
+                                        "label": "Content"
+                                    },
+                                    {
+                                        "name": "attachments",
+                                        "spec": [
+                                            {
+                                                "name": "fileName",
+                                                "type": "filename",
+                                                "label": "File name",
+                                                "required": true,
+                                                "semantic": "file:name"
+                                            },
+                                            {
+                                                "name": "data",
+                                                "type": "buffer",
+                                                "label": "Data",
+                                                "required": true,
+                                                "semantic": "file:data"
+                                            },
+                                            {
+                                                "name": "cid",
+                                                "type": "text",
+                                                "label": "Content-ID"
+                                            }
+                                        ],
+                                        "type": "array",
+                                        "label": "Attachments"
+                                    },
+                                    {
+                                        "name": "cc",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "email",
+                                            "label": "Email address"
+                                        },
+                                        "type": "array",
+                                        "label": "Copy recipient"
+                                    },
+                                    {
+                                        "name": "bcc",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "email",
+                                            "label": "Email address"
+                                        },
+                                        "type": "array",
+                                        "label": "Blind copy recipient"
+                                    }
+                                ],
+                                "advanced": true
+                            }
+                        }
+                    ]
+                },
+                {
+                    "flow": [
+                        {
+                            "id": 24,
+                            "module": "zohocrm:searchUsers",
+                            "version": 3,
+                            "parameters": {
+                                "__IMTCONN__": 1644421
+                            },
+                            "filter": {
+                                "name": "Jei nerasta arba rasta per daug atitikmenų",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{13.value}}",
+                                            "o": "exist"
+                                        },
+                                        {
+                                            "a": "{{12.value}}",
+                                            "o": "exist"
+                                        }
+                                    ],
+                                    [
+                                        {
+                                            "a": "{{13.value}}",
+                                            "o": "exist"
+                                        },
+                                        {
+                                            "a": "{{11.value}}",
+                                            "o": "exist"
+                                        }
+                                    ],
+                                    [
+                                        {
+                                            "a": "{{12.value}}",
+                                            "o": "exist"
+                                        },
+                                        {
+                                            "a": "{{11.value}}",
+                                            "o": "exist"
+                                        }
+                                    ],
+                                    [
+                                        {
+                                            "a": "{{13.value}}",
+                                            "o": "notexist"
+                                        },
+                                        {
+                                            "a": "{{12.value}}",
+                                            "o": "notexist"
+                                        },
+                                        {
+                                            "a": "{{11.value}}",
+                                            "o": "notexist"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "type": "ActiveUsers",
+                                "limit": "100"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 2100,
+                                    "y": 900,
+                                    "name": "Surasti visus vartotojus"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "ids": {
+                                            "mode": "chose"
+                                        },
+                                        "type": {
+                                            "mode": "chose",
+                                            "label": "Active Users"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "zohocrm2"
+                                            },
+                                            "label": "My Zoho CRM connection"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:zohocrm2",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "type",
+                                        "type": "select",
+                                        "label": "Type",
+                                        "validate": {
+                                            "enum": [
+                                                "AllUsers",
+                                                "ActiveUsers",
+                                                "DeactiveUsers",
+                                                "ConfirmedUsers",
+                                                "NotConfirmedUsers",
+                                                "DeletedUsers",
+                                                "ActiveConfirmedUsers",
+                                                "AdminUsers",
+                                                "ActiveConfirmedAdmins",
+                                                "CurrentUser"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "limit",
+                                        "type": "uinteger",
+                                        "label": "Limit"
+                                    },
+                                    {
+                                        "name": "ids",
+                                        "type": "select",
+                                        "label": "User ID",
+                                        "multiple": true
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 25,
+                            "module": "builtin:BasicAggregator",
+                            "version": 1,
+                            "parameters": {
+                                "feeder": 24
+                            },
+                            "mapper": {
+                                "id": "{{24.id}}",
+                                "email": "{{24.email}}",
+                                "first_name": "{{24.first_name}}",
+                                "__IMTLENGTH__": "{{24.`__IMTLENGTH__`}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 2400,
+                                    "y": 900,
+                                    "name": "Sugeneruojamas pagalbos spec. mąsyvas"
+                                },
+                                "restore": {
+                                    "extra": {
+                                        "feeder": {
+                                            "label": "Surasti visus vartotojus - Search Users [8]"
+                                        },
+                                        "target": {
+                                            "label": "Custom"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "id": 26,
+                            "module": "util:SetVariable2",
+                            "version": 1,
+                            "parameters": {},
+                            "mapper": {
+                                "name": "Random Number",
+                                "scope": "roundtrip",
+                                "value": "{{floor(random * (25.array[1].`__IMTLENGTH__` - 1 + 1)) + 1}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 2700,
+                                    "y": 900,
+                                    "name": "Nustatomas atsitiktinis skaičius"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "scope": {
+                                            "label": "One cycle"
+                                        }
+                                    }
+                                },
+                                "expect": [
+                                    {
+                                        "name": "name",
+                                        "type": "text",
+                                        "label": "Variable name",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "scope",
+                                        "type": "select",
+                                        "label": "Variable lifetime",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "roundtrip",
+                                                "execution"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": "any",
+                                        "label": "Variable value"
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "Random Number",
+                                        "type": "any",
+                                        "label": "Random Number"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 41,
+                            "module": "zohocrm:createObject",
+                            "version": 3,
+                            "parameters": {
+                                "__IMTCONN__": 1644421
+                            },
+                            "mapper": {
+                                "Name": "{{2.from.name}} | Registruota klaida",
+                                "Owner": "{{25.array[26.`Random Number`].id}}",
+                                "Pavard": "{{get(split(2.from.name; space); 2)}}",
+                                "Vardas": "{{get(split(2.from.name; space); 1)}}",
+                                "module": "Registruotos_Klaidos",
+                                "El_pa_to_adresas": "{{2.from.address}}",
+                                "Telefono_numeris": "{{9.value}}",
+                                "mon_s_pavadinimas": "{{10.value}}",
+                                "Registravimo_tipas": "Nenustatyta",
+                                "Klaidos_apib_dinimas": "{{2.text}}",
+                                "Klaidos_sprendimo_b_sena": "Laukiama pagalbos"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 3000,
+                                    "y": 900,
+                                    "name": "Sukuriama klaidos kortelė"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "module": {
+                                            "mode": "chose",
+                                            "label": "Registruotos Klaidos"
+                                        },
+                                        "trigger": {
+                                            "mode": "chose"
+                                        },
+                                        "Registravimo_tipas": {
+                                            "mode": "chose",
+                                            "label": "Nenustatyta"
+                                        },
+                                        "Prid_tos_nuotraukos": {
+                                            "mode": "chose"
+                                        },
+                                        "Klaidos_sprendimo_b_sena": {
+                                            "mode": "chose",
+                                            "label": "Laukiama pagalbos"
+                                        },
+                                        "Programuotojo_klaidos_sprendimo_b_sena": {
+                                            "mode": "chose",
+                                            "label": "Empty"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "zohocrm2"
+                                            },
+                                            "label": "My Zoho CRM connection"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:zohocrm2",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "module",
+                                        "type": "select",
+                                        "label": "Module",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "trigger",
+                                        "type": "select",
+                                        "label": "Trigger",
+                                        "multiple": true,
+                                        "validate": {
+                                            "enum": [
+                                                "workflow",
+                                                "approval",
+                                                "blueprint"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "Name",
+                                        "type": "text",
+                                        "label": "Registruotos Klaidos pavadinimas",
+                                        "required": true,
+                                        "validate": {
+                                            "max": 255
+                                        }
+                                    },
+                                    {
+                                        "name": "Klaidos_sprendimo_b_sena",
+                                        "type": "select",
+                                        "label": "Klaidos sprendimo būsena",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "Owner",
+                                        "type": "text",
+                                        "label": "Registruotos Klaidos Owner",
+                                        "validate": {
+                                            "max": 120
+                                        }
+                                    },
+                                    {
+                                        "name": "Programuotojo_klaidos_sprendimo_b_sena",
+                                        "type": "select",
+                                        "label": "Programuotojo klaidos sprendimo būsena"
+                                    },
+                                    {
+                                        "name": "Registravimo_tipas",
+                                        "type": "select",
+                                        "label": "Registravimo tipas"
+                                    },
+                                    {
+                                        "name": "Vardas",
+                                        "type": "text",
+                                        "validate": {
+                                            "max": 255
+                                        }
+                                    },
+                                    {
+                                        "name": "Pavard",
+                                        "type": "text",
+                                        "label": "Pavardė",
+                                        "validate": {
+                                            "max": 255
+                                        }
+                                    },
+                                    {
+                                        "name": "El_pa_to_adresas",
+                                        "type": "email",
+                                        "label": "El. pašto adresas",
+                                        "validate": {
+                                            "max": 100
+                                        }
+                                    },
+                                    {
+                                        "name": "Telefono_numeris",
+                                        "type": "text",
+                                        "label": "Telefono numeris",
+                                        "validate": {
+                                            "max": 30
+                                        }
+                                    },
+                                    {
+                                        "name": "Klaidos_apib_dinimas",
+                                        "type": "text",
+                                        "label": "Klaidos apibūdinimas",
+                                        "validate": {
+                                            "max": 2000
+                                        }
+                                    },
+                                    {
+                                        "name": "mon_s_pavadinimas",
+                                        "type": "text",
+                                        "label": "Įmonės pavadinimas",
+                                        "validate": {
+                                            "max": 255
+                                        }
+                                    },
+                                    {
+                                        "name": "Prid_tos_nuotraukos",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "text"
+                                        },
+                                        "type": "array",
+                                        "label": "Pridėtos nuotraukos",
+                                        "validate": {
+                                            "max": 10
+                                        }
+                                    }
+                                ],
+                                "advanced": true
+                            }
+                        },
+                        {
+                            "id": 50,
+                            "module": "google-email:ActionSendEmail",
+                            "version": 2,
+                            "parameters": {
+                                "account": 434025
+                            },
+                            "mapper": {
+                                "cc": [],
+                                "to": [
+                                    "{{25.array[26.`Random Number`].email}}"
+                                ],
+                                "bcc": [],
+                                "from": "LuEmTrip Administracija lukaskojalad@gmail.com",
+                                "html": "<!DOCTYPE html>\n<html>\n  <head>\n    <meta charset=\"utf-8\">\n  </head>\n  <body>\n    <h2>Nauja klaida užregistruota</h2>\n    <p>Klientas sistemoje užregistravo klaidą, kuriai reikia Jūsų dėmesio.</p>\n    <p>Klaidos duomenys:</p>\n    <ul>\n      <li><strong>Tipas:</strong> Nenustatyta</li>\n      <li><strong>Pranešėjas:</strong> {{2.from.name}} | {{2.from.address}}</li>\n    </ul>\n    <p>Norint peržiūrėti klaidos kortelę paspauskite mygtuką žemiau:</p>\n    <p>\n      <a href=\"https://crmplus.zoho.eu/portal6622/index.do/cxapp/crm/org20087938738/tab/CustomModule4/{{41.Id}}\">\n        <button style=\"background-color: #008CBA; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;\">Peržiūrėti klaidos kortelę</button>\n      </a>\n    </p>\n    <p>Pagarbiai,<br>LuEmTrip Administracija</p>\n  </body>\n</html>\n",
+                                "subject": "[KLAIDA] Užregistruota nauja klaida",
+                                "attachments": []
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 3300,
+                                    "y": 900,
+                                    "name": "Pranešimas pagalbos spec."
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "cc": {
+                                            "mode": "chose"
+                                        },
+                                        "to": {
+                                            "mode": "chose",
+                                            "items": [
+                                                null
+                                            ]
+                                        },
+                                        "bcc": {
+                                            "mode": "chose"
+                                        },
+                                        "attachments": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "account": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "google-restricted"
+                                            },
+                                            "label": "My Google Restricted connection (lukas.kojala@unifiedpost.com)"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "account",
+                                        "type": "account:google-restricted",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "from",
+                                        "type": "text",
+                                        "label": "From"
+                                    },
+                                    {
+                                        "name": "to",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "email",
+                                            "label": "Email address",
+                                            "required": true
+                                        },
+                                        "type": "array",
+                                        "label": "To",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "subject",
+                                        "type": "text",
+                                        "label": "Subject"
+                                    },
+                                    {
+                                        "name": "html",
+                                        "type": "text",
+                                        "label": "Content"
+                                    },
+                                    {
+                                        "name": "attachments",
+                                        "spec": [
+                                            {
+                                                "name": "fileName",
+                                                "type": "filename",
+                                                "label": "File name",
+                                                "required": true,
+                                                "semantic": "file:name"
+                                            },
+                                            {
+                                                "name": "data",
+                                                "type": "buffer",
+                                                "label": "Data",
+                                                "required": true,
+                                                "semantic": "file:data"
+                                            },
+                                            {
+                                                "name": "cid",
+                                                "type": "text",
+                                                "label": "Content-ID"
+                                            }
+                                        ],
+                                        "type": "array",
+                                        "label": "Attachments"
+                                    },
+                                    {
+                                        "name": "cc",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "email",
+                                            "label": "Email address"
+                                        },
+                                        "type": "array",
+                                        "label": "Copy recipient"
+                                    },
+                                    {
+                                        "name": "bcc",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "email",
+                                            "label": "Email address"
+                                        },
+                                        "type": "array",
+                                        "label": "Blind copy recipient"
+                                    }
+                                ],
+                                "advanced": true
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "metadata": {
+        "instant": false,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu1.make.com"
+    }
+}

@@ -1,0 +1,1566 @@
+{
+    "name": "Sąskaitų valdymas | Vienkartinės",
+    "flow": [
+        {
+            "id": 1,
+            "module": "gateway:CustomWebHook",
+            "version": 1,
+            "parameters": {
+                "hook": 808825,
+                "maxResults": 1
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 0,
+                    "name": "Gauti sąskaitos ID"
+                },
+                "restore": {
+                    "parameters": {
+                        "hook": {
+                            "data": {
+                                "editable": "true"
+                            },
+                            "label": "Sąskaitos duomenys"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "hook",
+                        "type": "hook:gateway-webhook",
+                        "label": "Webhook",
+                        "required": true
+                    },
+                    {
+                        "name": "maxResults",
+                        "type": "number",
+                        "label": "Maximum number of results"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 2,
+            "module": "zohocrm:getObject",
+            "version": 3,
+            "parameters": {
+                "__IMTCONN__": 1644421
+            },
+            "mapper": {
+                "id": "{{1.KortelesID}}",
+                "module": "S_skaitos",
+                "select": "list"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 300,
+                    "y": 0,
+                    "name": "Gauti sąskaitos duomenis"
+                },
+                "restore": {
+                    "expect": {
+                        "id": {
+                            "mode": "edit"
+                        },
+                        "module": {
+                            "mode": "chose",
+                            "label": "Sąskaitos",
+                            "nested": [
+                                {
+                                    "mode": "edit",
+                                    "name": "id",
+                                    "type": "select",
+                                    "label": "Object ID",
+                                    "options": "rpc://zohocrm/3/listObjects",
+                                    "required": true
+                                }
+                            ]
+                        },
+                        "select": {
+                            "label": "Select from the list"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "zohocrm2"
+                            },
+                            "label": "My Zoho CRM connection"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:zohocrm2",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "select",
+                        "type": "select",
+                        "label": "Get an Object",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "map",
+                                "list"
+                            ]
+                        }
+                    },
+                    {
+                        "mode": "edit",
+                        "name": "module",
+                        "type": "select",
+                        "label": "Module",
+                        "required": true
+                    },
+                    {
+                        "mode": "edit",
+                        "name": "id",
+                        "type": "select",
+                        "label": "Object ID",
+                        "required": true
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "id",
+                        "type": "uinteger",
+                        "label": "Object ID",
+                        "required": true
+                    },
+                    {
+                        "name": "Name",
+                        "type": "text",
+                        "label": "Sąskaitos Numeris"
+                    },
+                    {
+                        "name": "Owner",
+                        "spec": [
+                            {
+                                "name": "id",
+                                "type": "text",
+                                "label": "Sąskaitos Owner ID"
+                            },
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Name"
+                            },
+                            {
+                                "name": "email",
+                                "type": "email",
+                                "label": "Email"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Sąskaitos Owner"
+                    },
+                    {
+                        "name": "Klientas",
+                        "spec": [
+                            {
+                                "name": "id",
+                                "type": "text",
+                                "label": "Klientas ID"
+                            },
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Name"
+                            },
+                            {
+                                "name": "email",
+                                "type": "email",
+                                "label": "Email"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Klientas"
+                    },
+                    {
+                        "name": "S_skaitos_b_sena",
+                        "type": "text",
+                        "label": "Sąskaitos būsena"
+                    },
+                    {
+                        "name": "Created_Time",
+                        "type": "date",
+                        "label": "Created Time"
+                    },
+                    {
+                        "name": "Modified_Time",
+                        "type": "date",
+                        "label": "Modified Time"
+                    },
+                    {
+                        "name": "S_skaitos_tipas",
+                        "type": "text",
+                        "label": "Sąskaitos tipas"
+                    },
+                    {
+                        "name": "Unsubscribed_Mode",
+                        "type": "text",
+                        "label": "Unsubscribed Mode"
+                    },
+                    {
+                        "name": "Unsubscribed_Time",
+                        "type": "date",
+                        "label": "Unsubscribed Time"
+                    },
+                    {
+                        "name": "Locked__s",
+                        "type": "boolean",
+                        "label": "Locked"
+                    },
+                    {
+                        "name": "Record_Image",
+                        "type": "text",
+                        "label": "Sąskaitos Image"
+                    },
+                    {
+                        "name": "S_skaitos_eilut_s",
+                        "type": "text",
+                        "label": "Sąskaitos eilutės"
+                    },
+                    {
+                        "name": "Created_By",
+                        "spec": [
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Name"
+                            },
+                            {
+                                "name": "id",
+                                "type": "uinteger",
+                                "label": "Created by ID"
+                            },
+                            {
+                                "name": "email",
+                                "type": "email",
+                                "label": "Email"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Created by"
+                    },
+                    {
+                        "name": "$orchestration",
+                        "type": "boolean",
+                        "label": "Orchestration"
+                    },
+                    {
+                        "name": "First_Name",
+                        "type": "text",
+                        "label": "First Name"
+                    },
+                    {
+                        "name": "Full_Name",
+                        "type": "text",
+                        "label": "Full Name"
+                    },
+                    {
+                        "name": "Modified_By",
+                        "spec": [
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Name"
+                            },
+                            {
+                                "name": "id",
+                                "type": "uinteger",
+                                "label": "Modified by ID"
+                            },
+                            {
+                                "name": "email",
+                                "type": "email",
+                                "label": "Email"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Modified by"
+                    },
+                    {
+                        "name": "Tag",
+                        "spec": [
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Name"
+                            },
+                            {
+                                "name": "id",
+                                "type": "uinteger",
+                                "label": "Tag ID"
+                            },
+                            {
+                                "name": "color_code",
+                                "type": "text",
+                                "label": "Color Code"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Tag"
+                    },
+                    {
+                        "name": "Email_Opt_Out",
+                        "type": "boolean",
+                        "label": "Email Opt Out"
+                    },
+                    {
+                        "name": "Last_Name",
+                        "type": "text",
+                        "label": "Last Name"
+                    },
+                    {
+                        "name": "Last_Activity_Time",
+                        "type": "date",
+                        "label": "Last Activity Time"
+                    },
+                    {
+                        "name": "$currency_symbol",
+                        "type": "text",
+                        "label": "Currency Symbol"
+                    },
+                    {
+                        "name": "$sharing_permission",
+                        "type": "text",
+                        "label": "Sharing Permission"
+                    },
+                    {
+                        "name": "$state",
+                        "type": "text",
+                        "label": "State"
+                    },
+                    {
+                        "name": "$converted",
+                        "type": "boolean",
+                        "label": "Converted"
+                    },
+                    {
+                        "name": "$process_flow",
+                        "type": "boolean",
+                        "label": "Process Flow"
+                    },
+                    {
+                        "name": "$approval",
+                        "spec": [
+                            {
+                                "name": "delegate",
+                                "type": "boolean",
+                                "label": "Delegate"
+                            },
+                            {
+                                "name": "approve",
+                                "type": "boolean",
+                                "label": "Approve"
+                            },
+                            {
+                                "name": "reject",
+                                "type": "boolean",
+                                "label": "Reject"
+                            },
+                            {
+                                "name": "resubmit",
+                                "type": "boolean",
+                                "label": "Resubmit"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Approval"
+                    },
+                    {
+                        "name": "$editable",
+                        "type": "boolean",
+                        "label": "Editable"
+                    },
+                    {
+                        "name": "$review_process",
+                        "spec": [
+                            {
+                                "name": "approve",
+                                "type": "boolean",
+                                "label": "Approve"
+                            },
+                            {
+                                "name": "reject",
+                                "type": "boolean",
+                                "label": "Reject"
+                            },
+                            {
+                                "name": "resubmit",
+                                "type": "boolean",
+                                "label": "Resubmit"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Review Process"
+                    },
+                    {
+                        "name": "$converted_detail",
+                        "spec": [],
+                        "type": "collection",
+                        "label": "Converted Detail"
+                    },
+                    {
+                        "name": "$in_merge",
+                        "type": "boolean",
+                        "label": "In Merge"
+                    },
+                    {
+                        "name": "$approval_state",
+                        "type": "text",
+                        "label": "Approval State"
+                    },
+                    {
+                        "name": "$followed",
+                        "type": "boolean",
+                        "label": "Followed"
+                    },
+                    {
+                        "name": "$se_module",
+                        "type": "text",
+                        "label": "SE Module"
+                    },
+                    {
+                        "name": "$calendar_booking_event",
+                        "type": "boolean",
+                        "label": "Calendar Booking Event"
+                    },
+                    {
+                        "name": "$event_cancelled",
+                        "type": "boolean",
+                        "label": "Event Cancelled"
+                    },
+                    {
+                        "name": "$u_id",
+                        "type": "uinteger",
+                        "label": "U ID"
+                    },
+                    {
+                        "name": "$send_notification",
+                        "type": "boolean",
+                        "label": "Send Notification"
+                    },
+                    {
+                        "name": "$calendar_booking_call",
+                        "type": "boolean",
+                        "label": "Calendar Booking Call"
+                    },
+                    {
+                        "name": "$is_shared_to_client",
+                        "type": "boolean",
+                        "label": "Is Shared to Client"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 9,
+            "module": "zohocrm:getObject",
+            "version": 3,
+            "parameters": {
+                "__IMTCONN__": 1644421
+            },
+            "mapper": {
+                "id": "{{2.Klientas.id}}",
+                "module": "Klientai",
+                "select": "list"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 600,
+                    "y": 0,
+                    "name": "Gauti kliento duomenis"
+                },
+                "restore": {
+                    "expect": {
+                        "id": {
+                            "mode": "edit"
+                        },
+                        "module": {
+                            "mode": "chose",
+                            "label": "Klientai",
+                            "nested": [
+                                {
+                                    "mode": "edit",
+                                    "name": "id",
+                                    "type": "select",
+                                    "label": "Object ID",
+                                    "options": "rpc://zohocrm/3/listObjects",
+                                    "required": true
+                                }
+                            ]
+                        },
+                        "select": {
+                            "label": "Select from the list"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "zohocrm2"
+                            },
+                            "label": "My Zoho CRM connection"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:zohocrm2",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "select",
+                        "type": "select",
+                        "label": "Get an Object",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "map",
+                                "list"
+                            ]
+                        }
+                    },
+                    {
+                        "mode": "edit",
+                        "name": "module",
+                        "type": "select",
+                        "label": "Module",
+                        "required": true
+                    },
+                    {
+                        "mode": "edit",
+                        "name": "id",
+                        "type": "select",
+                        "label": "Object ID",
+                        "required": true
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "id",
+                        "type": "uinteger",
+                        "label": "Object ID",
+                        "required": true
+                    },
+                    {
+                        "name": "NA_Statusas",
+                        "type": "text",
+                        "label": "Statusas"
+                    },
+                    {
+                        "name": "mon",
+                        "type": "text",
+                        "label": "Įmonė?"
+                    },
+                    {
+                        "name": "Name",
+                        "type": "text",
+                        "label": "Vardas"
+                    },
+                    {
+                        "name": "Telefono_numeris",
+                        "type": "text",
+                        "label": "Telefono numeris"
+                    },
+                    {
+                        "name": "Pavard",
+                        "type": "text",
+                        "label": "Pavardė"
+                    },
+                    {
+                        "name": "Owner",
+                        "spec": [
+                            {
+                                "name": "id",
+                                "type": "text",
+                                "label": "Klientai Owner ID"
+                            },
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Name"
+                            },
+                            {
+                                "name": "email",
+                                "type": "email",
+                                "label": "Email"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Klientai Owner"
+                    },
+                    {
+                        "name": "El_pa_to_adresas",
+                        "type": "email",
+                        "label": "El. pašto adresas"
+                    },
+                    {
+                        "name": "Modified_Time",
+                        "type": "date",
+                        "label": "Modified Time"
+                    },
+                    {
+                        "name": "Created_Time",
+                        "type": "date",
+                        "label": "Created Time"
+                    },
+                    {
+                        "name": "Potencialaus_kliento_kortel",
+                        "spec": [
+                            {
+                                "name": "id",
+                                "type": "text",
+                                "label": "Potencialaus kliento kortelė ID"
+                            },
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Name"
+                            },
+                            {
+                                "name": "email",
+                                "type": "email",
+                                "label": "Email"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Potencialaus kliento kortelė"
+                    },
+                    {
+                        "name": "Unsubscribed_Mode",
+                        "type": "text",
+                        "label": "Unsubscribed Mode"
+                    },
+                    {
+                        "name": "Unsubscribed_Time",
+                        "type": "date",
+                        "label": "Unsubscribed Time"
+                    },
+                    {
+                        "name": "Locked__s",
+                        "type": "boolean",
+                        "label": "Locked"
+                    },
+                    {
+                        "name": "Record_Image",
+                        "type": "text",
+                        "label": "Klientai Image"
+                    },
+                    {
+                        "name": "Pavadinimas",
+                        "type": "text",
+                        "label": "Pavadinimas"
+                    },
+                    {
+                        "name": "mon_s_kodas",
+                        "type": "text",
+                        "label": "Įmonės kodas"
+                    },
+                    {
+                        "name": "Metin_s_pajamos",
+                        "type": "number",
+                        "label": "Metinės pajamos"
+                    },
+                    {
+                        "name": "mon_s_PVM_kodas",
+                        "type": "text",
+                        "label": "Įmonės PVM kodas"
+                    },
+                    {
+                        "name": "Tinklalapis",
+                        "type": "url",
+                        "label": "Tinklalapis"
+                    },
+                    {
+                        "name": "Veiklos_sritis",
+                        "type": "text",
+                        "label": "Veiklos sritis"
+                    },
+                    {
+                        "name": "Darbuotoj_skai_ius",
+                        "type": "number",
+                        "label": "Darbuotojų skaičius"
+                    },
+                    {
+                        "name": "Miestas",
+                        "type": "text",
+                        "label": "Miestas"
+                    },
+                    {
+                        "name": "Apmok_jimo_dienos",
+                        "type": "number",
+                        "label": "Apmokėjimo dienos"
+                    },
+                    {
+                        "name": "Gatv",
+                        "type": "text",
+                        "label": "Gatvė"
+                    },
+                    {
+                        "name": "S_skaitos_tipas",
+                        "type": "text",
+                        "label": "Sąskaitos tipas"
+                    },
+                    {
+                        "name": "Numeris",
+                        "type": "text",
+                        "label": "Numeris"
+                    },
+                    {
+                        "name": "Pa_to_Kodas",
+                        "type": "text",
+                        "label": "Pašto Kodas"
+                    },
+                    {
+                        "name": "Created_By",
+                        "spec": [
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Name"
+                            },
+                            {
+                                "name": "id",
+                                "type": "uinteger",
+                                "label": "Created by ID"
+                            },
+                            {
+                                "name": "email",
+                                "type": "email",
+                                "label": "Email"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Created by"
+                    },
+                    {
+                        "name": "$orchestration",
+                        "type": "boolean",
+                        "label": "Orchestration"
+                    },
+                    {
+                        "name": "First_Name",
+                        "type": "text",
+                        "label": "First Name"
+                    },
+                    {
+                        "name": "Full_Name",
+                        "type": "text",
+                        "label": "Full Name"
+                    },
+                    {
+                        "name": "Modified_By",
+                        "spec": [
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Name"
+                            },
+                            {
+                                "name": "id",
+                                "type": "uinteger",
+                                "label": "Modified by ID"
+                            },
+                            {
+                                "name": "email",
+                                "type": "email",
+                                "label": "Email"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Modified by"
+                    },
+                    {
+                        "name": "Tag",
+                        "spec": [
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Name"
+                            },
+                            {
+                                "name": "id",
+                                "type": "uinteger",
+                                "label": "Tag ID"
+                            },
+                            {
+                                "name": "color_code",
+                                "type": "text",
+                                "label": "Color Code"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Tag"
+                    },
+                    {
+                        "name": "Email_Opt_Out",
+                        "type": "boolean",
+                        "label": "Email Opt Out"
+                    },
+                    {
+                        "name": "Last_Name",
+                        "type": "text",
+                        "label": "Last Name"
+                    },
+                    {
+                        "name": "Last_Activity_Time",
+                        "type": "date",
+                        "label": "Last Activity Time"
+                    },
+                    {
+                        "name": "$currency_symbol",
+                        "type": "text",
+                        "label": "Currency Symbol"
+                    },
+                    {
+                        "name": "$sharing_permission",
+                        "type": "text",
+                        "label": "Sharing Permission"
+                    },
+                    {
+                        "name": "$state",
+                        "type": "text",
+                        "label": "State"
+                    },
+                    {
+                        "name": "$converted",
+                        "type": "boolean",
+                        "label": "Converted"
+                    },
+                    {
+                        "name": "$process_flow",
+                        "type": "boolean",
+                        "label": "Process Flow"
+                    },
+                    {
+                        "name": "$approval",
+                        "spec": [
+                            {
+                                "name": "delegate",
+                                "type": "boolean",
+                                "label": "Delegate"
+                            },
+                            {
+                                "name": "approve",
+                                "type": "boolean",
+                                "label": "Approve"
+                            },
+                            {
+                                "name": "reject",
+                                "type": "boolean",
+                                "label": "Reject"
+                            },
+                            {
+                                "name": "resubmit",
+                                "type": "boolean",
+                                "label": "Resubmit"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Approval"
+                    },
+                    {
+                        "name": "$editable",
+                        "type": "boolean",
+                        "label": "Editable"
+                    },
+                    {
+                        "name": "$review_process",
+                        "spec": [
+                            {
+                                "name": "approve",
+                                "type": "boolean",
+                                "label": "Approve"
+                            },
+                            {
+                                "name": "reject",
+                                "type": "boolean",
+                                "label": "Reject"
+                            },
+                            {
+                                "name": "resubmit",
+                                "type": "boolean",
+                                "label": "Resubmit"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Review Process"
+                    },
+                    {
+                        "name": "$converted_detail",
+                        "spec": [],
+                        "type": "collection",
+                        "label": "Converted Detail"
+                    },
+                    {
+                        "name": "$in_merge",
+                        "type": "boolean",
+                        "label": "In Merge"
+                    },
+                    {
+                        "name": "$approval_state",
+                        "type": "text",
+                        "label": "Approval State"
+                    },
+                    {
+                        "name": "$followed",
+                        "type": "boolean",
+                        "label": "Followed"
+                    },
+                    {
+                        "name": "$se_module",
+                        "type": "text",
+                        "label": "SE Module"
+                    },
+                    {
+                        "name": "$calendar_booking_event",
+                        "type": "boolean",
+                        "label": "Calendar Booking Event"
+                    },
+                    {
+                        "name": "$event_cancelled",
+                        "type": "boolean",
+                        "label": "Event Cancelled"
+                    },
+                    {
+                        "name": "$u_id",
+                        "type": "uinteger",
+                        "label": "U ID"
+                    },
+                    {
+                        "name": "$send_notification",
+                        "type": "boolean",
+                        "label": "Send Notification"
+                    },
+                    {
+                        "name": "$calendar_booking_call",
+                        "type": "boolean",
+                        "label": "Calendar Booking Call"
+                    },
+                    {
+                        "name": "$is_shared_to_client",
+                        "type": "boolean",
+                        "label": "Is Shared to Client"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 5,
+            "module": "builtin:BasicFeeder",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "array": "{{2.S_skaitos_eilut_s}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 900,
+                    "y": 0,
+                    "name": "Išskaidyti eilutes"
+                },
+                "restore": {
+                    "expect": {
+                        "array": {
+                            "mode": "edit"
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "mode": "edit",
+                        "name": "array",
+                        "spec": [],
+                        "type": "array",
+                        "label": "Array"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 11,
+            "module": "builtin:BasicFeeder",
+            "version": 1,
+            "parameters": {},
+            "filter": {
+                "name": "",
+                "conditions": [
+                    [
+                        {
+                            "a": "{{5.`__IMTLENGTH__`}}",
+                            "b": "{{5.`__IMTINDEX__`}}",
+                            "o": "text:equal"
+                        }
+                    ]
+                ]
+            },
+            "mapper": {
+                "array": "{{2.S_skaitos_eilut_s}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 1200,
+                    "y": 0,
+                    "name": "Išskaidyti eilutes"
+                },
+                "restore": {
+                    "expect": {
+                        "array": {
+                            "mode": "edit"
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "mode": "edit",
+                        "name": "array",
+                        "spec": [],
+                        "type": "array",
+                        "label": "Array"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 12,
+            "module": "util:FunctionAggregator2",
+            "version": 1,
+            "parameters": {
+                "fn": "sum",
+                "feeder": 11
+            },
+            "mapper": {
+                "value": "{{11.Kaina}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 1500,
+                    "y": 0,
+                    "name": "Suskaičiuoti bendrą sumą"
+                },
+                "restore": {
+                    "extra": {
+                        "feeder": {
+                            "label": "Iterator [11]"
+                        }
+                    },
+                    "parameters": {
+                        "fn": {
+                            "label": "SUM"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "fn",
+                        "type": "select",
+                        "label": "Aggregate function",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "avg",
+                                "sum",
+                                "count",
+                                "max",
+                                "min"
+                            ]
+                        }
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "value",
+                        "type": "number",
+                        "label": "Value"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 17,
+            "module": "google-docs:createADocumentFromTemplate",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 433641
+            },
+            "mapper": {
+                "from": "share",
+                "name": "Sąskaita_{{1.Name}}",
+                "select": "dropdown",
+                "document": "/1276SKD2q_CZA23v9kXR3s8Zm8wZtaWyO0QldbQP_oYM",
+                "folderId": "/",
+                "requests": {
+                    "pvm": "{{pvmproc}}",
+                    "kaina": "{{kaina}}",
+                    "pavad": "{{name}}",
+                    "kiekis": "{{kiekis}}",
+                    "adresas": "{{3.Miestas}}, {{3.Gatv}}, {{3.Numeris}}, {{3.Pa_to_Kodas}}",
+                    "mato_vnt": "{{vnt}}",
+                    "pvm_Suma": "{{(0(pvmproc * 6.result))}}",
+                    "suma_bePVM": "{{6.result - (0(pvmproc * 6.result))}}",
+                    "bendra_suma": "{{6.result + (0(pvmproc * 6.result))}}",
+                    "pavadinimas_vp": "{{if(3.mon = true; 3.Pavadinimas; 3.Full_Name)}}",
+                    "apmokejimo_Data": "{{formatDate(addDays(now; 30); \"YYYY-MM-DD\")}}",
+                    "telnr_pvm_kodas": "{{if(3.mon = true; 3.mon_s_PVM_kodas; 3.Telefono_numeris)}}",
+                    "el_pastas_im_kodas": "{{if(3.mon = true; 3.mon_s_kodas; 3.El_pa_to_adresas)}}"
+                },
+                "destination": "drive"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 1815,
+                    "y": -5,
+                    "name": "Sukurti sąskaitą iš šablono",
+                    "messages": [
+                        {
+                            "category": "reference",
+                            "severity": "error",
+                            "message": "Module references non-existing module '3'."
+                        },
+                        {
+                            "category": "reference",
+                            "severity": "error",
+                            "message": "Module references non-existing module '6'."
+                        }
+                    ]
+                },
+                "restore": {
+                    "expect": {
+                        "from": {
+                            "label": "Shared With Me"
+                        },
+                        "select": {
+                            "label": "By Dropdown"
+                        },
+                        "document": {
+                            "path": [
+                                "Saskaitos Šablonas"
+                            ]
+                        },
+                        "folderId": {
+                            "mode": "chose",
+                            "path": [
+                                "/"
+                            ]
+                        },
+                        "destination": {
+                            "label": "My Drive"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "google"
+                            },
+                            "label": "My Google connection (lukaskojalad@gmail.com)"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:google",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "select",
+                        "type": "select",
+                        "label": "Create a Document from a Template",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "map",
+                                "dropdown"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "type": "text",
+                        "label": "Title",
+                        "required": true
+                    },
+                    {
+                        "name": "destination",
+                        "type": "select",
+                        "label": "New Drive Location",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "drive",
+                                "share",
+                                "team"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "type": "select",
+                        "label": "Choose a Drive",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "drive",
+                                "share",
+                                "team"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "document",
+                        "type": "file",
+                        "label": "Document ID",
+                        "required": true
+                    },
+                    {
+                        "name": "requests",
+                        "spec": [
+                            {
+                                "name": "pavadinimas_vp",
+                                "type": "any"
+                            },
+                            {
+                                "name": "el_pastas_im_kodas",
+                                "type": "any"
+                            },
+                            {
+                                "name": "telnr_pvm_kodas",
+                                "type": "any"
+                            },
+                            {
+                                "name": "adresas",
+                                "type": "any"
+                            },
+                            {
+                                "name": "apmokejimo_Data",
+                                "type": "any"
+                            },
+                            {
+                                "name": "pavad",
+                                "type": "any"
+                            },
+                            {
+                                "name": "mato_vnt",
+                                "type": "any"
+                            },
+                            {
+                                "name": "kiekis",
+                                "type": "any"
+                            },
+                            {
+                                "name": "kaina",
+                                "type": "any"
+                            },
+                            {
+                                "name": "pvm",
+                                "type": "any"
+                            },
+                            {
+                                "name": "suma_bePVM",
+                                "type": "any"
+                            },
+                            {
+                                "name": "pvm_Suma",
+                                "type": "any"
+                            },
+                            {
+                                "name": "bendra_suma",
+                                "type": "any"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Values"
+                    },
+                    {
+                        "name": "folderId",
+                        "type": "folder",
+                        "label": "New Document's Location",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 15,
+            "module": "google-docs:exportADocument",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 433641
+            },
+            "mapper": {
+                "document": "{{3.id}}",
+                "mimeType": "application/pdf",
+                "destination": "drive"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 2100,
+                    "y": 0,
+                    "name": "Atsisiųsti sąskaitos PDF",
+                    "messages": [
+                        {
+                            "category": "reference",
+                            "severity": "warning",
+                            "message": "Referenced module 'Google Docs - Create a Document from a Template' [3] is not accessible."
+                        }
+                    ]
+                },
+                "restore": {
+                    "expect": {
+                        "document": {
+                            "mode": "edit",
+                            "path": []
+                        },
+                        "mimeType": {
+                            "mode": "chose",
+                            "label": "PDF Document (.pdf)"
+                        },
+                        "destination": {
+                            "label": "My Drive"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "google"
+                            },
+                            "label": "My Google connection"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:google",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "destination",
+                        "type": "select",
+                        "label": "Choose a Drive",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "drive",
+                                "share",
+                                "team"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "mimeType",
+                        "type": "select",
+                        "label": "Type",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                                "application/vnd.oasis.opendocument.text",
+                                "application/rtf",
+                                "application/pdf",
+                                "text/plain",
+                                "text/html",
+                                "application/epub+zip"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "document",
+                        "type": "file",
+                        "label": "Document ID",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 16,
+            "module": "google-email:ActionSendEmail",
+            "version": 2,
+            "parameters": {
+                "account": 434025
+            },
+            "mapper": {
+                "cc": [],
+                "to": [
+                    "{{9.El_pa_to_adresas}}"
+                ],
+                "bcc": [],
+                "from": "LuEmTrip Administracija lukaskojalad@gmail.com",
+                "html": "<!DOCTYPE html>\n<html>\n  <head>\n    <meta charset=\"utf-8\">\n    <title>LuEmTrip - Sąskaita faktūra</title>\n    <style>\n      body {\n        font-family: Arial, sans-serif;\n        font-size: 14px;\n        color: #333333;\n        background-color: #f2f2f2;\n      }\n      .container {\n        width: 600px;\n        margin: 0 auto;\n        background-color: #ffffff;\n        padding: 20px;\n        border: 1px solid #cccccc;\n        border-radius: 5px;\n      }\n      h1 {\n        font-size: 24px;\n        color: #008CBA;\n        margin-top: 0;\n      }\n      p {\n        margin-bottom: 20px;\n      }\n      button {\n        background-color: #008CBA;\n        color: #ffffff;\n        padding: 10px 20px;\n        border: none;\n        border-radius: 5px;\n        font-size: 16px;\n        cursor: pointer;\n      }\n      button:hover {\n        background-color: #005f79;\n      }\n      button a {\n  color: #ffffff;\n  text-decoration: none;\n}\n    </style>\n  </head>\n  <body>\n    <div class=\"container\">\n      <h1>LuEmTrip - Sąskaita faktūra</h1>\n      <p>Sveiki,</p>\n      <p>Šio el. laiško priede rasite mūsų išrašytą sąskaitą faktūrą.</p>\n      <p>Suma: {{12.result + parseNumber(12.result * 0.21; )}}</p>\n      <p>Atsiskaitymo terminas: {{9.Apmok_jimo_dienos}}</p>\n      <p>Jei turite kokių nors klausimų ar pastabų, nedvejokite susisiekti su mumis.</p>\n      <p>Linkime sėkmingų verslo sandorių,</p>\n      <p>LuEmTrip Komanda</p>\n    </div>\n  </body>\n</html>\n",
+                "subject": "Išrašyta sąskaita - LuEmTrip",
+                "attachments": [
+                    {
+                        "cid": "",
+                        "data": "{{15.data}}",
+                        "fileName": "{{15.filename}}"
+                    }
+                ]
+            },
+            "metadata": {
+                "designer": {
+                    "x": 2400,
+                    "y": 0,
+                    "name": "Pranešimas klientui"
+                },
+                "restore": {
+                    "expect": {
+                        "cc": {
+                            "mode": "chose"
+                        },
+                        "to": {
+                            "mode": "chose",
+                            "items": [
+                                null
+                            ]
+                        },
+                        "bcc": {
+                            "mode": "chose"
+                        },
+                        "attachments": {
+                            "mode": "chose",
+                            "items": [
+                                null
+                            ]
+                        }
+                    },
+                    "parameters": {
+                        "account": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "google-restricted"
+                            },
+                            "label": "My Google Restricted connection (lukas.kojala@unifiedpost.com)"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "account",
+                        "type": "account:google-restricted",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "from",
+                        "type": "text",
+                        "label": "From"
+                    },
+                    {
+                        "name": "to",
+                        "spec": {
+                            "name": "value",
+                            "type": "email",
+                            "label": "Email address",
+                            "required": true
+                        },
+                        "type": "array",
+                        "label": "To",
+                        "required": true
+                    },
+                    {
+                        "name": "subject",
+                        "type": "text",
+                        "label": "Subject"
+                    },
+                    {
+                        "name": "html",
+                        "type": "text",
+                        "label": "Content"
+                    },
+                    {
+                        "name": "attachments",
+                        "spec": [
+                            {
+                                "name": "fileName",
+                                "type": "filename",
+                                "label": "File name",
+                                "required": true,
+                                "semantic": "file:name"
+                            },
+                            {
+                                "name": "data",
+                                "type": "buffer",
+                                "label": "Data",
+                                "required": true,
+                                "semantic": "file:data"
+                            },
+                            {
+                                "name": "cid",
+                                "type": "text",
+                                "label": "Content-ID"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Attachments"
+                    },
+                    {
+                        "name": "cc",
+                        "spec": {
+                            "name": "value",
+                            "type": "email",
+                            "label": "Email address"
+                        },
+                        "type": "array",
+                        "label": "Copy recipient"
+                    },
+                    {
+                        "name": "bcc",
+                        "spec": {
+                            "name": "value",
+                            "type": "email",
+                            "label": "Email address"
+                        },
+                        "type": "array",
+                        "label": "Blind copy recipient"
+                    }
+                ],
+                "advanced": true
+            }
+        }
+    ],
+    "metadata": {
+        "instant": true,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu1.make.com"
+    }
+}
